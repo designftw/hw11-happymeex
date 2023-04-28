@@ -1,11 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<title>Exercise 2</title>
-		<link rel="stylesheet" href="writeup.css" />
-	</head>
-	<body>
-		<!-- your html here for exercise 2-->
-	</body>
+<html>
+    <head>
+        <script type="module" src="./chat.js"></script>
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="css/nav.css" />
+        <link rel="stylesheet" href="css/sideNav.css" />
+        <link rel="stylesheet" href="css/modal.css" />
+        <link rel="stylesheet" href="css/message.css" />
+    </head>
+    <body>
+        <div id="app">
+            <div
+                @click="toggleSettings"
+                v-show="settingsOpen"
+                id="modal-backdrop"
+            >
+                <article ref="modal" class="modal" @click.stop="0">
+                    <div id="settings-wrapper" v-show="settingsOpen">
+                        <h2>Settings</h2>
+                        <p id="name-editor">
+                            <b>In-chat name:</b>
+                            <name :actor="$gf.me" :editable="true"></name>
+                        </p>
+                        <form>
+                            <label for="username-input">
+                                <b>Change username:</b> @
+                            </label>
+                            <div id="username-input">
+                                <div :class="usernameInputClass">
+                                    {{usernameInputMessage}}
+                                </div>
+                                <input
+                                    type="text"
+                                    v-model="requestedUsername"
+                                />
+                            </div>
+                            <button type="button" @click="requestUsername">
+                                Request
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+            <nav id="navbar">
+                <h1 @click="temp">Graffiti Chat Network</h1>
+                <div id="navbar-controls">
+                    <span
+                        ><b v-if="$gf.me"
+                            ><name :actor="$gf.me"></name>@{{username ? username
+                            : "Anonymous"}}</b
+                        >
+                    </span>
+                    <button @click="toggleSettings">Settings</button>
+                    <button @click="$gf.toggleLogIn">
+                        <!-- If we have a user ID, we're logged in so show "Log Out" -->
+                        <!-- Otherwise, show "Log In" -->
+                        {{ $gf.me? 'Log Out' : 'Log In' }}
+                    </button>
+                </div>
+            </nav>
+            <main>
+                <nav id="sidenav">
+                    <article id="sidenav-search">
+                        <h2>Find Chats</h2>
+                        <p>
+                            <b>Chat type:</b>
+                            <input
+                                type="radio"
+                                id="channel"
+                                :value="false"
+                                v-model="searchingPrivate"
+                            />
+                            <label for="channel">Public Channel</label>
+
+                            <input
+                                type="radio"
+                                id="pm"
+                                :value="true"
+                                v-model="searchingPrivate"
+                            />
+                            <label for="pm">Private Messaging</label>
+                        </p>
+                        <form
+                            @submit.prevent="findChat"
+                            v-if="!searchingPrivate"
+                        >
+                            <label for="channel"> <b>Channel name: </b> </label>
+                            <input id="channel" v-model="channelSearch" />
+                            <button :disabled="searchingChat">Open chat</button>
+                        </form>
+                        <form @submit.prevent="findChat" v-else>
+                            <label style="position: relative; height: 1em">
+                                <b>Recipient username:</b> @
+                                <input
+                                    :disabled="searchingChat"
+                                    v-model="usernameSearch"
+                                />
+                                <div
+                                    v-if="!searchingChat && invalidUsernameSearch"
+                                    class="tooltip-top"
+                                    style="left: 8em"
+                                >
+                                    User not found!
+                                </div>
+                            </label>
+                            <button v-if="!searchingChat">Search</button>
+                            <img
+                                style="height: 1em; margin-left: 2px"
+                                v-else
+                                src="assets/loader.svg"
+                            />
+                        </form>
+                    </article>
+                    <article id="chatlog">
+                        <h2 style="margin-bottom: 0">Recent chats</h2>
+                        <section
+                            :class="`recent-chat ${i === selectedChat? 'selected' : ''}`"
+                            v-for="(chat, i) in recentChats"
+                            @click="handleSidenav(chat, i)"
+                        >
+                            <h3>
+                                {{chat.type === "channel" ? chat.name : '@' +
+                                chat.username}}
+                            </h3>
+                        </section>
+                    </article>
+                </nav>
+                <article id="chat-window" v-if="$gf.me">
+                    <div id="chat-header">
+                        <h2>
+                            {{privateMessaging ? "@" + recipientUsername :
+                            "Channel: "+channel}}
+                        </h2>
+                    </div>
+
+                    <!-- A form for sending messages -->
+                    <div id="message-bar">
+                        <form @submit.prevent="sendMessage">
+                            <input
+                                ref="messageBarInput"
+                                v-model="messageText"
+                                placeholder="Type a message..."
+                            />
+                            <input type="submit" value="Send" />
+                        </form>
+                    </div>
+
+                    <div
+                        id="chat-messageHolder"
+                        ref="messageHolder"
+                        @scroll="onScroll"
+                    >
+                        <div id="chat-messageWrapper" @scroll="onScroll">
+                            <!-- List all the messages -->
+                            <div v-for="message of messages" :key="message.id">
+                                <div>
+                                    <div
+                                        :ref="message.id"
+                                        :class="`message-wrapper ${message.actor === $gf.me ? 'my-message' :' other-author'}`"
+                                    >
+                                        <form
+                                            v-if="editID==message.id"
+                                            @submit.prevent="saveEditMessage(message)"
+                                        >
+                                            <input v-model="editText" />
+                                            <input type="submit" value="Save" />
+                                            <button
+                                                type="button"
+                                                @click="exitEdit"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </form>
+                                        <div
+                                            v-else
+                                            class="message-nameAndContent"
+                                        >
+                                            <div class="message-name">
+                                                <name
+                                                    :actor="message.actor"
+                                                ></name>
+                                            </div>
+                                            <div class="message-body">
+                                                <div
+                                                    class="message-editDelete"
+                                                    v-if="message.actor === $gf.me"
+                                                >
+                                                    <button
+                                                        @click="removeMessage(message)"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                    <button
+                                                        @click="startEditMessage(message)"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                </div>
+                                                <div class="message-content">
+                                                    {{ message.content }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </main>
+
+            <!-- If we're not logged in, hide everything except the login button -->
+        </div>
+
+        <template id="name">
+            <span v-if="!editing">
+                <!-- If we're not editing the name-->
+                <!-- Display the profile's name, if it exists -->
+                <!-- or anonymous if it doesn't -->
+                {{ profile? profile.name : 'Anonymous' }}
+
+                <!-- Also if the name is "editable" add an edit button -->
+                <button v-if="editable" @click="editName">Edit Name</button>
+            </span>
+
+            <!-- If we're in the editing state, create something to edit the name-->
+            <form v-else @submit.prevent="saveName">
+                <input v-model="editText" />
+                <input type="submit" value="Save" />
+                <button type="button" @click="exitSave">Cancel</button>
+            </form>
+        </template>
+    </body>
 </html>

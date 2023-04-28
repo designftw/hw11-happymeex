@@ -1,0 +1,36 @@
+#modal-backdrop {
+    position: fixed;
+    z-index: 3;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0 0 0 / 30%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    position: absolute;
+    width: 60vw;
+    height: 60vh;
+    background-color: white;
+    border-radius: 8px;
+}
+
+#username-input {
+    position: relative;
+    display: inline-block;
+    margin-right: 0.5em;
+}
+
+h2 {
+    text-align: center;
+}
+
+#settings-wrapper {
+    padding: 0 16px;
+}
+
+#name-editor form {
+    display: inline-block;
+}

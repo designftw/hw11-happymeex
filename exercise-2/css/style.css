@@ -1,0 +1,117 @@
+:root {
+    --med-grey: rgb(0 0 0 / 50%);
+    --light-grey: rgb(220 220 220);
+}
+
+body {
+    margin: 0;
+}
+
+body * {
+    font-family: Calibri, sans-serif;
+    font-size: 18px;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+.hidden {
+    display: none;
+}
+
+.tooltip-top {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    background-color: rgb(50 50 50);
+    color: white;
+    border-radius: 4px;
+    padding: 0.5em;
+}
+
+.tooltip-right {
+    position: absolute;
+    left: calc(100% + 2px);
+    width: max-content;
+    bottom: -40%;
+    background-color: rgb(50 50 50);
+    color: white;
+    border-radius: 4px;
+    padding: 0.5em;
+}
+
+button,
+input[type="submit"] {
+    cursor: pointer;
+    font: inherit;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+#app > nav {
+    height: 10vh;
+}
+
+main {
+    height: 90vh;
+    display: flex;
+}
+
+main > nav {
+    width: 30vw;
+}
+
+main > article {
+    width: 70vw;
+}
+
+#chat-window {
+    height: 100%;
+    display: grid;
+    grid-template-areas: "chat-header" "chat-messageHolder" "message-bar";
+    grid-template-rows: 1fr 9fr 1fr;
+}
+
+#chat-header {
+    grid-area: chat-header;
+    padding: 0 2em;
+    border-bottom: 1px solid var(--light-grey);
+}
+
+#chat-header h2 {
+    text-align: left;
+}
+
+#chat-messageHolder {
+    grid-area: chat-messageHolder;
+    overflow-y: auto;
+}
+
+#chat-messageWrapper {
+    overflow-y: auto;
+}
+
+#message-bar {
+    grid-area: message-bar;
+    border-top: 1px solid var(--light-grey);
+    padding: 1em;
+}
+
+#message-bar form {
+    display: flex;
+    height: 100%;
+}
+#message-bar input {
+    flex-basis: 80%;
+}
+
+#message-bar form input[type="submit"] {
+    flex-basis: 20%;
+}

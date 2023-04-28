@@ -1,0 +1,16 @@
+#navbar {
+    padding: 1em 3em;
+    box-sizing: border-box;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-bottom: 1px solid var(--light-grey);
+}
+
+#navbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+}

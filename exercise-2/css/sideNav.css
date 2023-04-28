@@ -1,0 +1,28 @@
+#sidenav {
+    z-index: 1;
+    background-color: white;
+    border-right: 1px solid var(--light-grey);
+    padding: 0 3em;
+}
+
+#sidenav h2 {
+    text-align: left;
+}
+
+.recent-chat {
+    display: flex;
+    align-items: center;
+    height: 3em;
+    border-radius: 8px;
+    padding: 1em;
+}
+
+.recent-chat:hover {
+    transition: 0.08s;
+    background-color: rgba(0 0 0 / 20%);
+    cursor: pointer;
+}
+
+.selected {
+    background-color: rgba(0 0 0 / 10%);
+}

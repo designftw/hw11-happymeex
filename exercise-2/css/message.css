@@ -1,0 +1,68 @@
+.message-wrapper {
+    --message-padding: 1em;
+    overflow-wrap: anywhere;
+    display: flex;
+    padding: 1em;
+}
+
+.other-author {
+    justify-content: flex-start;
+}
+
+.my-message {
+    justify-content: flex-end;
+}
+
+.message-nameAndContent {
+    max-width: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-body {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.message-editDelete {
+    position: absolute;
+    right: calc(100% + 1em);
+    width: max-content;
+    display: flex;
+    gap: 0.5em;
+}
+
+.my-message .message-nameAndContent {
+    align-items: flex-end;
+}
+
+.other-author .message-nameAndContent {
+    align-items: flex-start;
+}
+
+.message-name {
+    padding-left: var(--message-padding);
+    color: var(--med-grey);
+}
+
+.message-content {
+    border-radius: 1em;
+    background-color: var(--light-grey);
+    padding: calc(0.8 * var(--message-padding)) var(--message-padding);
+    display: inline-block;
+}
+
+.my-message .message-name {
+    text-align: right;
+    padding-left: 0;
+    padding-right: 1em;
+}
+
+.my-message .message-content {
+    text-align: right;
+}
+
+.my-message:not(:hover) .message-editDelete {
+    display: none;
+}
