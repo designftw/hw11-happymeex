@@ -142,8 +142,18 @@
                                 v-model="messageText"
                                 placeholder="Type a message..."
                             />
-                            <input type="file" accept="image/*" />
-                            <input type="submit" value="Send" />
+                            <input
+                                ref="fileInput"
+                                type="file"
+                                @change="onImageAttachment"
+                                accept="image/*"
+                            />
+                            <input
+                                ref="sendButton"
+                                :disabled="messageText.length === 0 && loadingImage"
+                                type="submit"
+                                value="Send"
+                            />
                         </form>
                     </div>
 
@@ -200,6 +210,11 @@
                                                 </div>
                                                 <div class="message-content">
                                                     {{ message.content }}
+                                                    <div
+                                                        v-if="message.attachment"
+                                                    >
+                                                        {{message.attachment}}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

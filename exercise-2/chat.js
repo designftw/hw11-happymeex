@@ -70,6 +70,9 @@ const app = {
             atBottom: true, // whether user is scrolled to the bottom
             oldScrollTop: 0,
             changedChats: false,
+            imageUri: null,
+            file: null,
+            loadingImage: false,
         };
     },
 
@@ -86,7 +89,7 @@ const app = {
                         // Is the value of that property 'Note'?
                         m.type == "Note" &&
                         // Does the message have a content property?
-                        m.content &&
+                        (m.content || m.attachment) &&
                         // Is that property a string?
                         typeof m.content == "string"
                 );
@@ -124,6 +127,12 @@ const app = {
     methods: {
         temp() {
             console.log(this.atBottom);
+        },
+        onImageAttachment(e) {
+            const file = e.target.files[0];
+            this.file = file;
+            this.uploadImage(true);
+            console.log("uploaded file:", file.name);
         },
         onScroll(e) {
             if (
@@ -250,11 +259,32 @@ const app = {
             }
         },
 
-        sendMessage() {
+        async uploadImage(isNew) {
+            console.log("uploading image...");
+            if (this.imageUri && !isNew) return;
+            this.$refs.sendButton.value = "Loading image...";
+            this.loadingImage = true;
+            this.imageUri = await this.$gf.media.store(this.file);
+            this.loadingImage = false;
+            this.$refs.sendButton.value = "Send";
+            console.log("got image uri:", this.imageUri);
+            return true;
+        },
+
+        async sendMessage() {
             const message = {
                 type: "Note",
                 content: this.messageText,
             };
+
+            if (this.file) {
+                await this.uploadImage(false);
+                console.log("done awaiting image uri");
+                message.attachment = {
+                    type: "Image",
+                    magnet: this.imageUri,
+                };
+            }
 
             // The context field declares which
             // channel(s) the object is posted in
@@ -271,6 +301,9 @@ const app = {
             this.$gf.post(message);
             this.messageText = "";
             this.atBottom = true;
+            this.file = null;
+            this.imageUri = null;
+            this.$refs.fileInput.value = null;
         },
 
         removeMessage(message) {
