@@ -108,8 +108,13 @@ main > article {
     display: flex;
     height: 100%;
 }
+
 #message-bar input {
-    flex-basis: 80%;
+    flex-basis: 60%;
+}
+
+#message-bar form input[type="file"] {
+    flex-basis: 20%;
 }
 
 #message-bar form input[type="submit"] {
