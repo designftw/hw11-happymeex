@@ -73,6 +73,7 @@ const app = {
             imageUri: null,
             file: null,
             loadingImage: false,
+            downloadedImages: {},
         };
     },
 
@@ -121,6 +122,30 @@ const app = {
             this.lastMessage = messages[messages.length - 1]?.id;
             this.messagesLoading = false; // not sure that this even does anything
             return messages;
+        },
+    },
+
+    watch: {
+        messages(messages) {
+            const withImages = messages.filter((msg) => {
+                return (
+                    msg.attachment &&
+                    msg.attachment.type === "Image" &&
+                    msg.attachment.magnet
+                );
+            });
+            console.log(withImages.length, "messages with images");
+            withImages.forEach(async (msg) => {
+                const uri = msg.attachment.magnet;
+                if (!this.downloadedImages[uri]) {
+                    console.log("undownloaded image");
+                    //const blob = await this.$gf.media.fetch(uri);
+                    //this.downloadedImages[uri] = URL.createObjectURL(blob);
+                    this.downloadedImages[uri] = true;
+                } else {
+                    console.log("already seen");
+                }
+            });
         },
     },
 
