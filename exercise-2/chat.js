@@ -173,8 +173,8 @@ const app = {
             this.oldScrollTop = e.target.scrollTop;
         },
         scrollToBottom() {
-            console.log(this.lastMessage);
-            const el = this.$refs[this.lastMessage][0];
+            let el;
+            if (this.lastMessage) el = this.$refs[this.lastMessage][0];
             if (el) {
                 el.scrollIntoView();
                 this.changedChats = false;
@@ -449,30 +449,29 @@ const Like = {
                 return obj.type === "Like" && obj.object === this.mid;
             });
         },
-        isLiked() {
+        myLike() {
             // whether *I* like this message
             return this.likes
-                .map((likeObj) => likeObj.actor)
-                .includes(this.$gf.me);
+                .filter((likeObj) => likeObj.actor === this.$gf.me)
+                .at(0);
         },
     },
 
     methods: {
         sendLike() {
-            console.log(this.likes);
             const obj = {
                 type: "Like",
                 object: this.mid,
                 context: [this.mid],
             };
-            if (this.isLiked) {
-                this.$gf.remove(obj); // figure this out
+            const myLike = this.myLike;
+            if (myLike) {
+                this.$gf.remove(myLike); // figure this out
                 console.log("removed like");
             } else {
                 this.$gf.post(obj);
                 console.log("liked message:", this.mid);
             }
-            this.$gf.post(obj);
         },
     },
 };

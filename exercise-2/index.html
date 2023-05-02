@@ -250,7 +250,8 @@
             </form>
         </template>
         <template id="like">
-            <button @click="sendLike">{{ likes.length }} likes</button>
+            <span>{{likes.length}} Likes</span>
+            <button @click="sendLike">{{myLike ? "Unlike" : "like"}}</button>
         </template>
     </body>
 </html>
