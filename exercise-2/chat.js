@@ -22,7 +22,7 @@ const app = {
 
     setup() {
         // Initialize the name of the channel we're chatting in
-        const channel = Vue.ref("default");
+        const channel = Vue.ref("secret-meex-2");
 
         // And a flag for whether or not we're private-messaging
         const privateMessaging = Vue.ref(false);
@@ -61,7 +61,7 @@ const app = {
             selectedChat: 0,
             recentChats: [
                 {
-                    name: "default",
+                    name: "secret-meex-2",
                     type: "channel",
                 },
             ],
@@ -466,7 +466,7 @@ const Like = {
                 context: [this.mid],
             };
             if (this.isLiked) {
-                this.$gf.remove(obj);
+                this.$gf.remove(obj); // figure this out
                 console.log("removed like");
             } else {
                 this.$gf.post(obj);
