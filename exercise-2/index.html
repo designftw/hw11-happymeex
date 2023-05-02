@@ -39,6 +39,11 @@
                                 Request
                             </button>
                         </form>
+                        <input
+                            type="file"
+                            @change="onPropicUpload"
+                            accept="image/*"
+                        />
                     </div>
                 </article>
             </div>
@@ -202,10 +207,12 @@
                                                     :actor="message.actor"
                                                 ></name>
 
-                                                <span v-if="message.inReplyTo">
+                                                <span
+                                                    v-if="message.inReplyTo && messageCache.get(message.inReplyTo)"
+                                                >
                                                     replied to
                                                     <name
-                                                        :actor="message.replyData.actor"
+                                                        :actor="messageCache.get(message.inReplyTo)"
                                                     ></name
                                                 ></span>
                                             </div>
@@ -238,9 +245,9 @@
                                                     <div
                                                         id="reply-content"
                                                         class="message-content reply"
-                                                        v-if="message.inReplyTo"
+                                                        v-if="message.inReplyTo && messageCache.get(message.inReplyTo)"
                                                     >
-                                                        {{message.replyData.content}}
+                                                        {{messageCache.get(message.inReplyTo).content}}
                                                     </div>
                                                     <div
                                                         class="message-content"
@@ -297,11 +304,9 @@
         <template id="seen">
             <div @click="temp" class="seen-list">
                 <span v-if="seen.length > 0">Seen by: </span>
-                <span v-for="(seenObj, i) in seenTrimmed">
-                    {{seenObj.actor === $gf.me ? "you" : seenObj.actor}}<span
-                        v-if="i < seenTrimmed.length - 1"
-                        >,
-                    </span>
+                <span v-for="(seenObj, i) in seenTrimmed" :key="seenObj.actor">
+                    <name :actor="seenObj.actor"></name
+                    ><span v-if="i < seenTrimmed.length - 1">, </span>
                 </span>
                 <span v-if="needsEllipses">...</span>
             </div></template

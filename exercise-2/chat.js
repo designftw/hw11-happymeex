@@ -78,12 +78,16 @@ const app = {
             lastSeen: "",
             replyingTo: undefined,
             replyingToContent: undefined,
+            profilePicture: undefined,
+            propicUri: undefined,
+            messageCache: undefined,
         };
     },
 
     computed: {
         messages() {
             const idToContent = new Map();
+            this.messageCache = new Map();
             let messages = this.messagesRaw
                 // Filter the "raw" messages for data
                 // that is appropriate for our application
@@ -95,7 +99,7 @@ const app = {
                         (m.content || m.attachment) &&
                         typeof m.content == "string"
                     ) {
-                        idToContent.set(m.id, {
+                        this.messageCache.set(m.id, {
                             content: m.content,
                             actor: m.actor,
                         });
@@ -119,14 +123,6 @@ const app = {
                 );
             }
 
-            messages.forEach((msg) => {
-                if (msg.inReplyTo) {
-                    const replyData = idToContent.get(msg.inReplyTo);
-                    if (replyData !== undefined)
-                        msg.replyData = idToContent.get(msg.inReplyTo);
-                    else msg.inReplyTo = undefined;
-                }
-            });
             messages = messages
                 .sort(
                     (m1, m2) => new Date(m2.published) - new Date(m1.published)
@@ -176,6 +172,23 @@ const app = {
         },
         exitReply() {
             this.replyingTo = undefined;
+        },
+        async onPropicUpload(e) {
+            const file = e.target.files[0];
+            console.log("uploading profile picture");
+            const propicUri = await this.$gf.media.store(file);
+            console.log(propicUri);
+        },
+        async uploadImage(isNew) {
+            console.log("uploading image...");
+            if (this.imageUri && !isNew) return;
+            this.$refs.sendButton.value = "Loading image...";
+            this.loadingImage = true;
+            this.imageUri = await this.$gf.media.store(this.file);
+            this.loadingImage = false;
+            this.$refs.sendButton.value = "Send";
+            console.log("got image uri:", this.imageUri);
+            return true;
         },
         onImageAttachment(e) {
             const file = e.target.files[0];
@@ -307,18 +320,6 @@ const app = {
             } catch {
                 this.showUsernameTooltip("Username already taken!");
             }
-        },
-
-        async uploadImage(isNew) {
-            console.log("uploading image...");
-            if (this.imageUri && !isNew) return;
-            this.$refs.sendButton.value = "Loading image...";
-            this.loadingImage = true;
-            this.imageUri = await this.$gf.media.store(this.file);
-            this.loadingImage = false;
-            this.$refs.sendButton.value = "Send";
-            console.log("got image uri:", this.imageUri);
-            return true;
         },
 
         async sendMessage() {
@@ -506,6 +507,7 @@ const Like = {
 };
 
 const Seen = {
+    components: { Name },
     props: ["mid", "peekmode"],
     template: `#seen`,
 
