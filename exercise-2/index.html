@@ -39,11 +39,14 @@
                                 Request
                             </button>
                         </form>
-                        <input
-                            type="file"
-                            @change="onPropicUpload"
-                            accept="image/*"
-                        />
+                        <p>
+                            <b>Change profile picture: </b>
+                            <input
+                                type="file"
+                                @change="onPropicUpload"
+                                accept="image/*"
+                            />
+                        </p>
                     </div>
                 </article>
             </div>
@@ -56,6 +59,9 @@
                             : "Anonymous"}}</b
                         >
                     </span>
+                    <div style="height: 50px" v-if="$gf.me">
+                        <propic :actor="$gf.me"></propic>
+                    </div>
                     <button v-if="$gf.me" @click="toggleSettings">
                         Settings
                     </button>
@@ -212,7 +218,7 @@
                                                 >
                                                     replied to
                                                     <name
-                                                        :actor="messageCache.get(message.inReplyTo)"
+                                                        :actor="messageCache.get(message.inReplyTo).actor"
                                                     ></name
                                                 ></span>
                                             </div>
@@ -282,12 +288,9 @@
                 <!-- If we're not editing the name-->
                 <!-- Display the profile's name, if it exists -->
                 <!-- or anonymous if it doesn't -->
-                {{ profile? profile.name : 'Anonymous' }}<button
-                    v-if="editable"
-                    @click="editName"
-                >
-                    Edit Name
-                </button>
+                {{ profile? profile.name : 'Anonymous' }}<span v-if="editable">
+                    {{" "}}<button @click="editName">Edit Name</button>
+                </span>
             </span>
 
             <!-- If we're in the editing state, create something to edit the name-->
@@ -311,5 +314,11 @@
                 <span v-if="needsEllipses">...</span>
             </div></template
         >
+        <template id="propic">
+            <img
+                style="height: 100%; border-radius: 100%"
+                :src="fetchUrl ?? url"
+            />
+        </template>
     </body>
 </html>

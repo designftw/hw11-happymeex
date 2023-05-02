@@ -402,30 +402,19 @@ const Name = {
 
     computed: {
         profile() {
-            return (
-                this.objects
-                    // Filter the raw objects for profile data
-                    // https://www.w3.org/TR/activitystreams-vocabulary/#dfn-profile
-                    .filter(
-                        (m) =>
-                            // Does the message have a type property?
-                            m.type &&
-                            // Is the value of that property 'Profile'?
-                            m.type == "Profile" &&
-                            // Does the message have a name property?
-                            m.name &&
-                            // Is that property a string?
-                            typeof m.name == "string"
-                    )
-                    // Choose the most recent one or null if none exists
-                    .reduce(
-                        (prev, curr) =>
-                            !prev || curr.published > prev.published
-                                ? curr
-                                : prev,
-                        null
-                    )
-            );
+            return this.objects
+                .filter(
+                    (m) =>
+                        m.type &&
+                        m.type == "Profile" &&
+                        m.name &&
+                        typeof m.name == "string"
+                )
+                .reduce(
+                    (prev, curr) =>
+                        !prev || curr.published > prev.published ? curr : prev,
+                    null
+                );
         },
     },
 
@@ -567,5 +556,49 @@ const Seen = {
     },
 };
 
-app.components = { Name, Like, Seen };
+const Propic = {
+    props: ["actor"],
+    template: `#propic`,
+    setup(props) {
+        const $gf = Vue.inject("graffiti");
+        const actor = Vue.toRef(props, "actor");
+        return $gf.useObjects([actor]);
+    },
+    data() {
+        return {
+            url: "assets/default.jpeg",
+        };
+    },
+    methods: {
+        async setURL(magnet) {
+            const blob = await this.$gf.media.fetch(magnet);
+            this.url = URL.createObjectURL(blob);
+        },
+    },
+    computed: {
+        fetchUrl() {
+            // profile
+            const mostRecent = this.objects
+                .filter(
+                    (m) =>
+                        m.type &&
+                        m.type == "Profile" &&
+                        ((m.image && m.image.magnet) ||
+                            (m.icon && m.icon.magnet))
+                )
+                .reduce(
+                    (prev, curr) =>
+                        !prev || curr.published > prev.published ? curr : prev,
+                    null
+                );
+            if (mostRecent) {
+                if (mostRecent.image) this.setURL(mostRecent.image.magnet);
+                else if (mostRecent.icon) this.setURL(mostRecent.icon.magnet);
+            }
+            return null;
+        },
+    },
+};
+
+app.components = { Name, Like, Seen, Propic };
 Vue.createApp(app).use(GraffitiPlugin(Vue)).mount("#app");
