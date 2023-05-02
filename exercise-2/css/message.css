@@ -73,3 +73,7 @@
 .message-wrapper:not(:hover) .message-editDelete {
     display: none;
 }
+
+.seen-list {
+    color: var(--med-grey);
+}

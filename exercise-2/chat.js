@@ -74,6 +74,8 @@ const app = {
             file: null,
             loadingImage: false,
             downloadedImages: {},
+            peekMode: false,
+            lastSeen: "",
         };
     },
 
@@ -439,13 +441,13 @@ const Like = {
     setup(props) {
         const $gf = Vue.inject("graffiti");
         const mid = Vue.toRef(props, "mid");
-        const { objects: likesRaw } = $gf.useObjects([mid]);
-        return { likesRaw };
+        const { objects: messageData } = $gf.useObjects([mid]);
+        return { messageData };
     },
 
     computed: {
         likes() {
-            return this.likesRaw.filter((obj) => {
+            return this.messageData.filter((obj) => {
                 return obj.type === "Like" && obj.object === this.mid;
             });
         },
@@ -459,6 +461,7 @@ const Like = {
 
     methods: {
         sendLike() {
+            console.log(this.messageData);
             const obj = {
                 type: "Like",
                 object: this.mid,
@@ -476,5 +479,77 @@ const Like = {
     },
 };
 
-app.components = { Name, Like };
+const Seen = {
+    props: ["mid"],
+    template: `#seen`,
+
+    setup(props) {
+        const $gf = Vue.inject("graffiti");
+        const mid = Vue.toRef(props, "mid");
+        const { objects: messageData } = $gf.useObjects([mid]);
+        return { messageData };
+    },
+    computed: {
+        seen() {
+            const viewers = new Set(); // for avoiding duplicates
+            return this.messageData.filter((obj) => {
+                if (obj.type === "Read" && obj.object === this.mid) {
+                    if (viewers.has(obj.actor)) return false;
+                    viewers.add(obj.actor);
+                    return true;
+                }
+                return false;
+            });
+        },
+        seenTrimmed() {
+            return this.seen.slice(0, 3);
+        },
+        needsEllipses() {
+            return this.seen.length > 3;
+        },
+        mySeen() {
+            // whether I've seen this message
+            return this.seen.filter((obj) => obj.actor === this.$gf.me).at(0);
+        },
+    },
+    methods: {
+        temp() {
+            console.log(
+                this.getName(
+                    `graffitiactor://9bbd3d295a6d4040c40689d4eb849740a67a168eac6cb5e85dc004f6954942f2`
+                )
+            );
+        },
+        getName(actorId) {
+            const names = this.$gf.useObjects([actorId]);
+            console.log(names);
+            return (
+                names
+                    // Filter the raw objects for profile data
+                    // https://www.w3.org/TR/activitystreams-vocabulary/#dfn-profile
+                    .filter(
+                        (m) =>
+                            // Does the message have a type property?
+                            m.type &&
+                            // Is the value of that property 'Profile'?
+                            m.type == "Profile" &&
+                            // Does the message have a name property?
+                            m.name &&
+                            // Is that property a string?
+                            typeof m.name == "string"
+                    )
+                    // Choose the most recent one or null if none exists
+                    .reduce(
+                        (prev, curr) =>
+                            !prev || curr.published > prev.published
+                                ? curr
+                                : prev,
+                        null
+                    )
+            );
+        },
+    },
+};
+
+app.components = { Name, Like, Seen };
 Vue.createApp(app).use(GraffitiPlugin(Vue)).mount("#app");

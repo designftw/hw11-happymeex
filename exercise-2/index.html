@@ -219,6 +219,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <seen :mid="message.id"></seen>
                                         </div>
                                     </div>
                                 </div>
@@ -253,5 +254,15 @@
             <span>{{likes.length}} Likes</span>
             <button @click="sendLike">{{myLike ? "Unlike" : "like"}}</button>
         </template>
+        <template id="seen">
+            <div @click="temp" class="seen-list">
+                <span v-if="seen.length > 0">Seen by: </span>
+                <span v-for="(seenObj, i) in seenTrimmed">
+                    {{seenObj.actor}}
+                    <span v-if="i < seenTrimmed.length - 1">, </span>
+                </span>
+                <span v-if="needsEllipses">...</span>
+            </div></template
+        >
     </body>
 </html>
