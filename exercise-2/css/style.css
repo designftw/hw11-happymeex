@@ -75,8 +75,8 @@ main > article {
 #chat-window {
     height: 100%;
     display: grid;
-    grid-template-areas: "chat-header" "chat-messageHolder" "message-bar";
-    grid-template-rows: 1fr 9fr 1fr;
+    grid-template-areas: "chat-header" "chat-messageHolder" "reply-holder" "message-bar";
+    grid-template-rows: 1fr 9fr min-content 1fr;
 }
 
 #chat-header {
@@ -96,6 +96,21 @@ main > article {
 
 #chat-messageWrapper {
     overflow-y: auto;
+}
+
+#reply-holder {
+    grid-area: reply-holder;
+    color: var(--med-grey);
+    padding: 0.5em 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--light-grey);
+}
+
+#close-reply {
+    cursor: pointer;
+    font-size: 2em;
 }
 
 #message-bar {

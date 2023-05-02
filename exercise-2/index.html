@@ -135,6 +135,13 @@
                     </div>
 
                     <!-- A form for sending messages -->
+                    <div id="reply-holder" v-if="replyingTo">
+                        <div>
+                            Replying to <name :actor="replyingTo.actor"></name>:
+                            {{replyingToContent}}
+                        </div>
+                        <span @click="exitReply" id="close-reply">&times;</span>
+                    </div>
                     <div id="message-bar">
                         <form @submit.prevent="sendMessage">
                             <input
@@ -205,6 +212,11 @@
                                                         @click="startEditMessage(message)"
                                                     >
                                                         Edit
+                                                    </button>
+                                                    <button
+                                                        @click="startReply(message.actor, message.content, message.id)"
+                                                    >
+                                                        Reply
                                                     </button>
                                                     <like
                                                         :mid="message.id"

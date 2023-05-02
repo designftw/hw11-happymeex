@@ -76,6 +76,8 @@ const app = {
             downloadedImages: {},
             peekMode: false,
             lastSeen: "",
+            replyingTo: undefined,
+            replyingToContent: undefined,
         };
     },
 
@@ -154,6 +156,17 @@ const app = {
     methods: {
         temp() {
             console.log(this.atBottom);
+        },
+        startReply(actorId, content, messageId) {
+            this.replyingTo = {
+                actor: actorId,
+                message: messageId,
+            };
+            this.replyingToContent = content;
+            this.$refs.messageBarInput.focus();
+        },
+        exitReply() {
+            this.replyingTo = undefined;
         },
         onImageAttachment(e) {
             const file = e.target.files[0];
