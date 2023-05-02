@@ -134,16 +134,16 @@ const app = {
                     msg.attachment.magnet
                 );
             });
-            console.log(withImages.length, "messages with images");
+            //console.log(withImages.length, "messages with images");
             withImages.forEach(async (msg) => {
                 const uri = msg.attachment.magnet;
                 if (!this.downloadedImages[uri]) {
-                    console.log("undownloaded image");
+                    //console.log("undownloaded image");
                     //const blob = await this.$gf.media.fetch(uri);
                     //this.downloadedImages[uri] = URL.createObjectURL(blob);
                     this.downloadedImages[uri] = true;
                 } else {
-                    console.log("already seen");
+                    //console.log("already seen");
                 }
             });
         },
@@ -167,6 +167,7 @@ const app = {
                 this.atBottom = true;
             }
             if (e.target.scrollTop < this.oldScrollTop && !this.changedChats) {
+                console.log("no longer at bottom");
                 this.atBottom = false;
             }
             this.oldScrollTop = e.target.scrollTop;
@@ -431,5 +432,50 @@ const Name = {
     template: "#name",
 };
 
-app.components = { Name };
+const Like = {
+    props: ["mid"],
+    template: "#like",
+
+    setup(props) {
+        const $gf = Vue.inject("graffiti");
+        const mid = Vue.toRef(props, "mid");
+        const { objects: likesRaw } = $gf.useObjects([mid]);
+        return { likesRaw };
+    },
+
+    computed: {
+        likes() {
+            return this.likesRaw.filter((obj) => {
+                return obj.type === "Like" && obj.object === this.mid;
+            });
+        },
+        isLiked() {
+            // whether *I* like this message
+            return this.likes
+                .map((likeObj) => likeObj.actor)
+                .includes(this.$gf.me);
+        },
+    },
+
+    methods: {
+        sendLike() {
+            console.log(this.likes);
+            const obj = {
+                type: "Like",
+                object: this.mid,
+                context: [this.mid],
+            };
+            if (this.isLiked) {
+                this.$gf.remove(obj);
+                console.log("removed like");
+            } else {
+                this.$gf.post(obj);
+                console.log("liked message:", this.mid);
+            }
+            this.$gf.post(obj);
+        },
+    },
+};
+
+app.components = { Name, Like };
 Vue.createApp(app).use(GraffitiPlugin(Vue)).mount("#app");

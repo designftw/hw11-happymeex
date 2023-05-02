@@ -193,20 +193,22 @@
                                                 ></name>
                                             </div>
                                             <div class="message-body">
-                                                <div
-                                                    class="message-editDelete"
-                                                    v-if="message.actor === $gf.me"
-                                                >
+                                                <div class="message-editDelete">
                                                     <button
+                                                        v-if="message.actor === $gf.me"
                                                         @click="removeMessage(message)"
                                                     >
                                                         Delete
                                                     </button>
                                                     <button
+                                                        v-if="message.actor === $gf.me"
                                                         @click="startEditMessage(message)"
                                                     >
                                                         Edit
                                                     </button>
+                                                    <like
+                                                        :mid="message.id"
+                                                    ></like>
                                                 </div>
                                                 <div class="message-content">
                                                     {{ message.content }}
@@ -246,6 +248,9 @@
                 <input type="submit" value="Save" />
                 <button type="button" @click="exitSave">Cancel</button>
             </form>
+        </template>
+        <template id="like">
+            <button @click="sendLike">{{ likes.length }} likes</button>
         </template>
     </body>
 </html>

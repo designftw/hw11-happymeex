@@ -25,9 +25,16 @@
     align-items: center;
 }
 
-.message-editDelete {
+.my-message .message-editDelete {
     position: absolute;
     right: calc(100% + 1em);
+    width: max-content;
+    display: flex;
+    gap: 0.5em;
+}
+.other-author .message-editDelete {
+    position: absolute;
+    left: calc(100% + 1em);
     width: max-content;
     display: flex;
     gap: 0.5em;
@@ -63,6 +70,6 @@
     text-align: right;
 }
 
-.my-message:not(:hover) .message-editDelete {
+.message-wrapper:not(:hover) .message-editDelete {
     display: none;
 }
