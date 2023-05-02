@@ -178,6 +178,14 @@ const app = {
             console.log("uploading profile picture");
             const propicUri = await this.$gf.media.store(file);
             console.log(propicUri);
+            this.$gf.post({
+                type: "Profile",
+                context: [this.$gf.me],
+                image: {
+                    type: "Image",
+                    magnet: propicUri,
+                },
+            });
         },
         async uploadImage(isNew) {
             console.log("uploading image...");
@@ -555,44 +563,6 @@ const Seen = {
         mySeen() {
             // whether I've seen this message
             return this.seen.filter((obj) => obj.actor === this.$gf.me).at(0);
-        },
-    },
-    methods: {
-        temp() {
-            //console.log(this.$gf.me);
-            console.log(
-                this.getName(
-                    `graffitiactor://9bbd3d295a6d4040c40689d4eb849740a67a168eac6cb5e85dc004f6954942f2`
-                )
-            );
-        },
-        getName(actorId) {
-            const names = this.$gf.useObjects([actorId]);
-            console.log(names);
-            return (
-                names
-                    // Filter the raw objects for profile data
-                    // https://www.w3.org/TR/activitystreams-vocabulary/#dfn-profile
-                    .filter(
-                        (m) =>
-                            // Does the message have a type property?
-                            m.type &&
-                            // Is the value of that property 'Profile'?
-                            m.type == "Profile" &&
-                            // Does the message have a name property?
-                            m.name &&
-                            // Is that property a string?
-                            typeof m.name == "string"
-                    )
-                    // Choose the most recent one or null if none exists
-                    .reduce(
-                        (prev, curr) =>
-                            !prev || curr.published > prev.published
-                                ? curr
-                                : prev,
-                        null
-                    )
-            );
         },
     },
 };

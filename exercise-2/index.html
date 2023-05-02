@@ -302,7 +302,7 @@
             <button @click="sendLike">{{myLike ? "Unlike" : "like"}}</button>
         </template>
         <template id="seen">
-            <div @click="temp" class="seen-list">
+            <div class="seen-list">
                 <span v-if="seen.length > 0">Seen by: </span>
                 <span v-for="(seenObj, i) in seenTrimmed" :key="seenObj.actor">
                     <name :actor="seenObj.actor"></name
