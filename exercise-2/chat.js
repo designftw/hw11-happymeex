@@ -16,7 +16,7 @@ const app = {
         console.log("Your username:", this.username);
         setInterval(() => {
             if (this.atBottom) this.$nextTick(this.scrollToBottom);
-        }, 5);
+        }, 10);
         this.$refs.messageBarInput.focus();
     },
 
@@ -83,21 +83,26 @@ const app = {
 
     computed: {
         messages() {
+            const idToContent = new Map();
             let messages = this.messagesRaw
                 // Filter the "raw" messages for data
                 // that is appropriate for our application
                 // https://www.w3.org/TR/activitystreams-vocabulary/#dfn-note
-                .filter(
-                    (m) =>
-                        // Does the message have a type property?
+                .filter((m) => {
+                    if (
                         m.type &&
-                        // Is the value of that property 'Note'?
                         m.type == "Note" &&
-                        // Does the message have a content property?
                         (m.content || m.attachment) &&
-                        // Is that property a string?
                         typeof m.content == "string"
-                );
+                    ) {
+                        idToContent.set(m.id, {
+                            content: m.content,
+                            actor: m.actor,
+                        });
+                        return true;
+                    }
+                    return false;
+                });
 
             // Do some more filtering for private messaging
             if (this.privateMessaging) {
@@ -114,14 +119,15 @@ const app = {
                 );
             }
 
+            messages.forEach((msg) => {
+                if (msg.inReplyTo) {
+                    msg.replyData = idToContent.get(msg.inReplyTo);
+                }
+            });
             messages = messages
-                // Sort the messages with the
-                // most recently created ones first
                 .sort(
                     (m1, m2) => new Date(m2.published) - new Date(m1.published)
                 )
-                // Only show the 10 most recent ones
-                //.slice(0, 10) // ask about the visible slicing nonsense in OH
                 .reverse();
             this.lastMessage = messages[messages.length - 1]?.id;
             this.messagesLoading = false; // not sure that this even does anything
@@ -327,6 +333,10 @@ const app = {
                 };
             }
 
+            if (this.replyingTo) {
+                message.inReplyTo = this.replyingTo.message; // message id
+            }
+
             // The context field declares which
             // channel(s) the object is posted in
             // You can post in more than one if you want!
@@ -496,12 +506,18 @@ const Seen = {
     props: ["mid", "peekmode"],
     template: `#seen`,
 
+    data() {
+        return {
+            allViewers: new Set(),
+        };
+    },
+
     setup(props) {
         const $gf = Vue.inject("graffiti");
         const mid = Vue.toRef(props, "mid"); // messageId
         const peekMode = Vue.toRef(props, "peekmode");
         const { objects: messageData } = $gf.useObjects([mid]);
-        return { messageData };
+        return { messageData, peekMode };
     },
     computed: {
         seen() {
@@ -510,12 +526,13 @@ const Seen = {
                 if (obj.type === "Read" && obj.object === this.mid) {
                     if (viewers.has(obj.actor)) return false;
                     viewers.add(obj.actor);
+                    this.allViewers.add(obj.actor);
                     return true;
                 }
                 return false;
             });
-            if (!this.peekMode && !viewers.has(this.$gf.me)) {
-                console.log("posting seen by you");
+            if (!this.peekMode && !this.allViewers.has(this.$gf.me)) {
+                console.log("posting seen by", this.$gf.me);
                 this.$gf.post({
                     type: "Read",
                     object: this.mid,

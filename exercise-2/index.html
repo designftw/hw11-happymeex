@@ -199,6 +199,13 @@
                                                 <name
                                                     :actor="message.actor"
                                                 ></name>
+
+                                                <span v-if="message.inReplyTo"
+                                                    >replied to
+                                                    <name
+                                                        :actor="message.replyData.actor"
+                                                    ></name
+                                                ></span>
                                             </div>
                                             <div class="message-body">
                                                 <div class="message-editDelete">
@@ -223,12 +230,25 @@
                                                         :mid="message.id"
                                                     ></like>
                                                 </div>
-                                                <div class="message-content">
-                                                    {{ message.content }}
+                                                <div
+                                                    class="message-replyAndContent"
+                                                >
                                                     <div
-                                                        v-if="message.attachment"
+                                                        id="reply-content"
+                                                        class="message-content reply"
+                                                        v-if="message.inReplyTo"
                                                     >
-                                                        {{message.attachment}}
+                                                        {{message.replyData.content}}
+                                                    </div>
+                                                    <div
+                                                        class="message-content"
+                                                    >
+                                                        {{ message.content }}
+                                                        <div
+                                                            v-if="message.attachment"
+                                                        >
+                                                            {{message.attachment}}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
