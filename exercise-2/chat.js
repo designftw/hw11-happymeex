@@ -121,7 +121,10 @@ const app = {
 
             messages.forEach((msg) => {
                 if (msg.inReplyTo) {
-                    msg.replyData = idToContent.get(msg.inReplyTo);
+                    const replyData = idToContent.get(msg.inReplyTo);
+                    if (replyData !== undefined)
+                        msg.replyData = idToContent.get(msg.inReplyTo);
+                    else msg.inReplyTo = undefined;
                 }
             });
             messages = messages
