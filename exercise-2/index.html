@@ -51,7 +51,9 @@
                             : "Anonymous"}}</b
                         >
                     </span>
-                    <button @click="toggleSettings">Settings</button>
+                    <button v-if="$gf.me" @click="toggleSettings">
+                        Settings
+                    </button>
                     <button @click="$gf.toggleLogIn">
                         <!-- If we have a user ID, we're logged in so show "Log Out" -->
                         <!-- Otherwise, show "Log In" -->
