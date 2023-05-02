@@ -480,19 +480,20 @@ const Like = {
 };
 
 const Seen = {
-    props: ["mid"],
+    props: ["mid", "peekmode"],
     template: `#seen`,
 
     setup(props) {
         const $gf = Vue.inject("graffiti");
-        const mid = Vue.toRef(props, "mid");
+        const mid = Vue.toRef(props, "mid"); // messageId
+        const peekMode = Vue.toRef(props, "peekmode");
         const { objects: messageData } = $gf.useObjects([mid]);
         return { messageData };
     },
     computed: {
         seen() {
             const viewers = new Set(); // for avoiding duplicates
-            return this.messageData.filter((obj) => {
+            const ret = this.messageData.filter((obj) => {
                 if (obj.type === "Read" && obj.object === this.mid) {
                     if (viewers.has(obj.actor)) return false;
                     viewers.add(obj.actor);
@@ -500,6 +501,15 @@ const Seen = {
                 }
                 return false;
             });
+            if (!this.peekMode && !viewers.has(this.$gf.me)) {
+                console.log("posting seen by you");
+                this.$gf.post({
+                    type: "Read",
+                    object: this.mid,
+                    context: [this.mid],
+                });
+            }
+            return ret;
         },
         seenTrimmed() {
             return this.seen.slice(0, 3);
@@ -514,6 +524,7 @@ const Seen = {
     },
     methods: {
         temp() {
+            //console.log(this.$gf.me);
             console.log(
                 this.getName(
                     `graffitiactor://9bbd3d295a6d4040c40689d4eb849740a67a168eac6cb5e85dc004f6954942f2`
