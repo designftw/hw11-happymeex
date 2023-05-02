@@ -137,8 +137,9 @@
                     <!-- A form for sending messages -->
                     <div id="reply-holder" v-if="replyingTo">
                         <div>
-                            Replying to <name :actor="replyingTo.actor"></name>:
-                            {{replyingToContent}}
+                            Replying to
+                            <name :actor="replyingTo.actor"></name
+                            >:{{replyingToContent}}
                         </div>
                         <span @click="exitReply" id="close-reply">&times;</span>
                     </div>
