@@ -1,1 +1,13 @@
-/* css for all of your write ups here */
+body * {
+    font-family: Calibri, sans-serif;
+}
+
+body > * {
+    width: 50vw;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
