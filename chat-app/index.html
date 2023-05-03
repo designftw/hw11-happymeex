@@ -12,7 +12,7 @@
         <div id="app">
             <div
                 @click="toggleSettings"
-                v-show="settingsOpen"
+                :class="`invisible ${settingsOpen ? 'visible' : ''}`"
                 id="modal-backdrop"
             >
                 <article ref="modal" class="modal" @click.stop="0">

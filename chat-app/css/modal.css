@@ -9,6 +9,11 @@
     align-items: center;
 }
 
+#modal-backdrop.visible {
+    visibility: visible;
+    opacity: 100%;
+}
+
 .modal {
     position: absolute;
     width: 60vw;
