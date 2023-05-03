@@ -1,1 +1,21 @@
-/* css for all of your write ups here */
+body :not(code) {
+    font-family: Calibri, sans-serif;
+}
+
+body > * {
+    width: 60vw;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.video-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+video {
+    width: 70%;
+}
