@@ -133,6 +133,25 @@
                             />
                         </form>
                     </article>
+                    <article>
+                        <h2>Read Receipts</h2>
+                        <p>
+                            <input
+                                id="on"
+                                type="radio"
+                                :value="true"
+                                v-model="peekMode"
+                            />
+                            <label for="on">On (Incognito mode)</label>
+                            <input
+                                id="off"
+                                type="radio"
+                                :value="false"
+                                v-model="peekMode"
+                            />
+                            <label for="off">Off</label>
+                        </p>
+                    </article>
                     <article v-if="$gf.me" id="chatlog">
                         <h2 style="margin-bottom: 0">Recent chats</h2>
                         <section
