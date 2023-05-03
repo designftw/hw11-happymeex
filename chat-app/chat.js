@@ -50,6 +50,7 @@ const app = {
             recipient: "", // this is an actor id
             searchingChat: false,
             usernameSearch: "",
+            checkingUsername: false,
             channelSearch: "",
             recipientUsername: "",
             invalidUsernameSearch: false,
@@ -320,18 +321,25 @@ const app = {
         },
 
         async requestUsername() {
-            console.log("requesting username", this.requestedUsername);
             if (this.requestedUsername === "") {
                 this.showUsernameTooltip("Please enter a username.");
+                setTimeout(() => {
+                    this.$refs.usernameRequest.focus();
+                }, 150);
                 return;
             }
             try {
+                this.checkingUsername = true;
+                const name = this.requestedUsername;
                 const status = await this.resolver.requestUsername(
                     this.requestedUsername
                 );
+                this.checkingUsername = false;
+                this.username = name;
                 this.showUsernameTooltip("Success!");
             } catch {
                 this.showUsernameTooltip("Username already taken!");
+                this.checkingUsername = false;
                 setTimeout(() => {
                     this.$refs.usernameRequest.focus();
                 }, 150);

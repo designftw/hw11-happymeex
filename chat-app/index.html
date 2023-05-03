@@ -33,12 +33,17 @@
                                     {{usernameInputMessage}}
                                 </div>
                                 <input
+                                    :disabled="checkingUsername"
                                     ref="usernameRequest"
                                     type="text"
                                     v-model="requestedUsername"
                                 />
                             </div>
-                            <button type="submit" @click="requestUsername">
+                            <button
+                                type="submit"
+                                :disabled="checkingUsername"
+                                @click="requestUsername"
+                            >
                                 Request
                             </button>
                         </form>
