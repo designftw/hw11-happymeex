@@ -139,17 +139,17 @@
                             <input
                                 id="on"
                                 type="radio"
-                                :value="true"
-                                v-model="peekMode"
-                            />
-                            <label for="on">On (Incognito mode)</label>
-                            <input
-                                id="off"
-                                type="radio"
                                 :value="false"
                                 v-model="peekMode"
                             />
-                            <label for="off">Off</label>
+                            <label for="on">On</label>
+                            <input
+                                id="off"
+                                type="radio"
+                                :value="true"
+                                v-model="peekMode"
+                            />
+                            <label for="off">Off (Incognito mode)</label>
                         </p>
                     </article>
                     <article v-if="$gf.me" id="chatlog">
