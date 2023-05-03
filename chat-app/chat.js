@@ -15,7 +15,9 @@ const app = {
         }
         console.log("Your username:", this.username);
         setInterval(() => {
-            if (this.atBottom) this.$nextTick(this.scrollToBottom);
+            if (this.atBottom) {
+                this.$nextTick(this.scrollToBottom);
+            }
         }, 10);
         this.$refs.messageBarInput.focus();
     },
@@ -67,7 +69,6 @@ const app = {
                 },
             ],
             messagesLoading: true,
-            lastMessage: "",
             atBottom: true, // whether user is scrolled to the bottom
             oldScrollTop: 0,
             changedChats: false,
@@ -129,7 +130,7 @@ const app = {
                     (m1, m2) => new Date(m2.published) - new Date(m1.published)
                 )
                 .reverse();
-            this.lastMessage = messages[messages.length - 1]?.id;
+            //this.lastMessage = messages[messages.length - 1]?.id;
             this.messagesLoading = false; // not sure that this even does anything
             return messages;
         },
@@ -219,14 +220,11 @@ const app = {
             this.oldScrollTop = e.target.scrollTop;
         },
         scrollToBottom() {
-            let el;
-            if (this.lastMessage) el = this.$refs[this.lastMessage][0];
-            if (el) {
-                el.scrollIntoView({
-                    block: "nearest",
-                });
-                this.changedChats = false;
-            }
+            if (!this.$refs.messageWrapper?.lastElementChild) return;
+            this.$refs.messageWrapper.lastElementChild.scrollIntoView({
+                block: "nearest",
+            });
+            this.changedChats = false;
         },
         handleSidenav(chat, i) {
             if (i !== this.selectedChat) {

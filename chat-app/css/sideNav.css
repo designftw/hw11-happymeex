@@ -18,9 +18,14 @@
 }
 
 .recent-chat:hover {
-    transition: 0.08s;
+    transition: 0.15s;
     background-color: rgba(0 0 0 / 20%);
     cursor: pointer;
+}
+
+.recent-chat:hover h3 {
+    transform: scale(1.05);
+    transform-origin: center;
 }
 
 .selected {

@@ -191,7 +191,11 @@
                         ref="messageHolder"
                         @scroll="onScroll"
                     >
-                        <div id="chat-messageWrapper" @scroll="onScroll">
+                        <div
+                            ref="messageWrapper"
+                            id="chat-messageWrapper"
+                            @scroll="onScroll"
+                        >
                             <!-- List all the messages -->
                             <div v-for="message of messages" :key="message.id">
                                 <div>
