@@ -22,20 +22,23 @@
                             <b>In-chat name:</b>
                             <name :actor="$gf.me" :editable="true"></name>
                         </p>
-                        <form>
+                        <form @submit.prevent="requestUsername">
                             <label for="username-input">
                                 <b>Change username:</b> @
                             </label>
                             <div id="username-input">
-                                <div :class="usernameInputClass">
+                                <div
+                                    :class="`tooltip-hidden ${usernameInputTooltip ? 'tooltip-top' : ''}`"
+                                >
                                     {{usernameInputMessage}}
                                 </div>
                                 <input
+                                    ref="usernameRequest"
                                     type="text"
                                     v-model="requestedUsername"
                                 />
                             </div>
-                            <button type="button" @click="requestUsername">
+                            <button type="submit" @click="requestUsername">
                                 Request
                             </button>
                         </form>
@@ -106,12 +109,12 @@
                             <label style="position: relative; height: 1em">
                                 <b>Recipient username:</b> @
                                 <input
+                                    ref="usersearch"
                                     :disabled="searchingChat"
                                     v-model="usernameSearch"
                                 />
                                 <div
-                                    v-if="!searchingChat && invalidUsernameSearch"
-                                    class="tooltip-top"
+                                    :class="`tooltip-hidden ${!searchingChat && invalidUsernameSearch ? 'tooltip-top': ''}`"
                                     style="left: 8em"
                                 >
                                     User not found!

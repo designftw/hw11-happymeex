@@ -55,7 +55,7 @@ const app = {
             invalidUsernameSearch: false,
             loadingSearch: false,
             requestedUsername: "",
-            usernameInputClass: "hidden",
+            usernameInputTooltip: false,
             usernameInputMessage: "",
             searchingPrivate: false,
             selectedChat: 0,
@@ -281,6 +281,9 @@ const app = {
                     this.$refs.messageBarInput.focus();
                 } else {
                     this.showUserSearchTooltip();
+                    setTimeout(() => {
+                        this.$refs.usersearch.focus();
+                    }, 150);
                 }
             } else {
                 for (const [i, chat] of this.recentChats.entries()) {
@@ -306,14 +309,14 @@ const app = {
             this.invalidUsernameSearch = true;
             setTimeout(() => {
                 this.invalidUsernameSearch = false;
-            }, 1000);
+            }, 3000);
         },
         async showUsernameTooltip(text) {
             this.usernameInputMessage = text;
-            this.usernameInputClass = "tooltip-top";
+            this.usernameInputTooltip = true;
             setTimeout(() => {
-                this.usernameInputClass = "hidden";
-            }, 1000);
+                this.usernameInputTooltip = false;
+            }, 3000);
         },
 
         async requestUsername() {
@@ -329,6 +332,9 @@ const app = {
                 this.showUsernameTooltip("Success!");
             } catch {
                 this.showUsernameTooltip("Username already taken!");
+                setTimeout(() => {
+                    this.$refs.usernameRequest.focus();
+                }, 150);
             }
         },
 

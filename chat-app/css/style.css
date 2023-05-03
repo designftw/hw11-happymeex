@@ -30,20 +30,19 @@ h2 {
     opacity: 0;
 }
 
-.tooltip-top {
+.tooltip-hidden {
+    transition: 0.3s;
     position: absolute;
-    bottom: calc(100% + 8px);
-    background-color: rgb(50 50 50);
-    color: white;
-    border-radius: 4px;
-    padding: 0.5em;
+    opacity: 0;
+    visibility: hidden;
+    bottom: calc(0%);
 }
 
-.tooltip-right {
+.tooltip-top {
+    opacity: 100%;
+    visibility: visible;
     position: absolute;
-    left: calc(100% + 2px);
-    width: max-content;
-    bottom: -40%;
+    bottom: calc(100% + 8px);
     background-color: rgb(50 50 50);
     color: white;
     border-radius: 4px;
