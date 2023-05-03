@@ -510,18 +510,12 @@ const Seen = {
     props: ["mid", "peekmode"],
     template: `#seen`,
 
-    data() {
-        return {
-            allViewers: new Set(),
-        };
-    },
-
     setup(props) {
         const $gf = Vue.inject("graffiti");
         const mid = Vue.toRef(props, "mid"); // messageId
         const peekMode = Vue.toRef(props, "peekmode");
         const { objects: messageData } = $gf.useObjects([mid]);
-        return { messageData, peekMode };
+        return { messageData, peekMode, mid };
     },
     computed: {
         seen() {
@@ -530,12 +524,11 @@ const Seen = {
                 if (obj.type === "Read" && obj.object === this.mid) {
                     if (viewers.has(obj.actor)) return false;
                     viewers.add(obj.actor);
-                    this.allViewers.add(obj.actor);
                     return true;
                 }
                 return false;
             });
-            if (!this.peekMode && !this.allViewers.has(this.$gf.me)) {
+            if (!this.peekMode && !viewers.has(this.$gf.me)) {
                 console.log("posting seen by", this.$gf.me);
                 this.$gf.post({
                     type: "Read",

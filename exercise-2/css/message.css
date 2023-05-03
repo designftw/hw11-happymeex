@@ -17,24 +17,24 @@
     max-width: 70%;
     display: flex;
     flex-direction: column;
+    gap: 2px;
 }
 
 .message-body {
-    position: relative;
     display: flex;
-    align-items: center;
+    align-items: end;
+    gap: 0.5em;
+}
+.other-author .message-body {
+    flex-direction: row-reverse;
 }
 
 .my-message .message-editDelete {
-    position: absolute;
-    right: calc(100% + 1em);
     width: max-content;
     display: flex;
     gap: 0.5em;
 }
 .other-author .message-editDelete {
-    position: absolute;
-    left: calc(100% + 1em);
     width: max-content;
     display: flex;
     gap: 0.5em;
@@ -49,7 +49,6 @@
 }
 
 .message-name {
-    padding-left: var(--message-padding);
     color: var(--med-grey);
 }
 
@@ -81,7 +80,6 @@
 .my-message .message-name {
     text-align: right;
     padding-left: 0;
-    padding-right: 1em;
 }
 
 .my-message .message-content {

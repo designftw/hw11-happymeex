@@ -208,42 +208,38 @@
                                             v-else
                                             class="message-nameAndContent"
                                         >
-                                            <div class="message-name">
-                                                <name
-                                                    :actor="message.actor"
-                                                ></name>
-
-                                                <span
-                                                    v-if="message.inReplyTo && messageCache.get(message.inReplyTo)"
-                                                >
-                                                    replied to
-                                                    <name
-                                                        :actor="messageCache.get(message.inReplyTo).actor"
-                                                    ></name
-                                                ></span>
-                                            </div>
                                             <div class="message-body">
-                                                <div class="message-editDelete">
-                                                    <button
-                                                        v-if="message.actor === $gf.me"
-                                                        @click="removeMessage(message)"
+                                                <div
+                                                    style="
+                                                        height: 100%;
+                                                        display: flex;
+                                                        align-items: center;
+                                                    "
+                                                >
+                                                    <div
+                                                        class="message-editDelete"
                                                     >
-                                                        Delete
-                                                    </button>
-                                                    <button
-                                                        v-if="message.actor === $gf.me"
-                                                        @click="startEditMessage(message)"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        @click="startReply(message.actor, message.content, message.id)"
-                                                    >
-                                                        Reply
-                                                    </button>
-                                                    <like
-                                                        :mid="message.id"
-                                                    ></like>
+                                                        <button
+                                                            v-if="message.actor === $gf.me"
+                                                            @click="removeMessage(message)"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                        <button
+                                                            v-if="message.actor === $gf.me"
+                                                            @click="startEditMessage(message)"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            @click="startReply(message.actor, message.content, message.id)"
+                                                        >
+                                                            Reply
+                                                        </button>
+                                                        <like
+                                                            :mid="message.id"
+                                                        ></like>
+                                                    </div>
                                                 </div>
                                                 <div
                                                     class="message-replyAndContent"
@@ -266,6 +262,30 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div
+                                                    style="
+                                                        height: 3em;
+                                                        width: 3em;
+                                                    "
+                                                >
+                                                    <propic
+                                                        :actor="message.actor"
+                                                    ></propic>
+                                                </div>
+                                            </div>
+                                            <div class="message-name">
+                                                <name
+                                                    :actor="message.actor"
+                                                ></name>
+
+                                                <span
+                                                    v-if="message.inReplyTo && messageCache.get(message.inReplyTo)"
+                                                >
+                                                    replied to
+                                                    <name
+                                                        :actor="messageCache.get(message.inReplyTo).actor"
+                                                    ></name
+                                                ></span>
                                             </div>
                                             <seen
                                                 :mid="message.id"
@@ -301,8 +321,9 @@
             </form>
         </template>
         <template id="like">
-            <span>{{likes.length}} Likes</span>
-            <button @click="sendLike">{{myLike ? "Unlike" : "like"}}</button>
+            <button @click="sendLike">
+                {{myLike ? "Unlike" : "Like"}} ({{likes.length}})
+            </button>
         </template>
         <template id="seen">
             <div class="seen-list">
