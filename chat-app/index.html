@@ -168,6 +168,13 @@
                 </nav>
                 <article id="chat-window" v-if="$gf.me">
                     <div id="chat-header">
+                        <div
+                            id="incognito-banner"
+                            :class="`banner-hidden ${peekMode ? 'banner-visible' : ''}`"
+                        >
+                            <img src="assets/eye.png" id="eye-image" />
+                            <span> Viewing in Incognito mode. </span>
+                        </div>
                         <h2>
                             {{privateMessaging ? "@" + recipientUsername :
                             "Channel: "+channel}}
