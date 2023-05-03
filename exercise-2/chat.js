@@ -221,7 +221,9 @@ const app = {
             let el;
             if (this.lastMessage) el = this.$refs[this.lastMessage][0];
             if (el) {
-                el.scrollIntoView();
+                el.scrollIntoView({
+                    block: "nearest",
+                });
                 this.changedChats = false;
             }
         },

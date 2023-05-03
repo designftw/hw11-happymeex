@@ -59,7 +59,7 @@
                             : "Anonymous"}}</b
                         >
                     </span>
-                    <div style="height: 50px" v-if="$gf.me">
+                    <div style="height: 50px; width: 50px" v-if="$gf.me">
                         <propic :actor="$gf.me"></propic>
                     </div>
                     <button v-if="$gf.me" @click="toggleSettings">
@@ -316,7 +316,12 @@
         >
         <template id="propic">
             <img
-                style="height: 100%; border-radius: 100%"
+                style="
+                    height: 100%;
+                    width: 100%;
+                    border-radius: 50%;
+                    object-fit: cover;
+                "
                 :src="fetchUrl ?? url"
             />
         </template>
