@@ -74,7 +74,7 @@
             </nav>
             <main>
                 <nav id="sidenav">
-                    <article id="sidenav-search">
+                    <article v-if="$gf.me" id="sidenav-search">
                         <h2>Find Chats</h2>
                         <p>
                             <b>Chat type:</b>
@@ -125,7 +125,7 @@
                             />
                         </form>
                     </article>
-                    <article id="chatlog">
+                    <article v-if="$gf.me" id="chatlog">
                         <h2 style="margin-bottom: 0">Recent chats</h2>
                         <section
                             :class="`recent-chat ${i === selectedChat? 'selected' : ''}`"
@@ -298,6 +298,18 @@
                         </div>
                     </div>
                 </article>
+                <div
+                    style="
+                        height: 100%;
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    "
+                    v-else
+                >
+                    Log in to access the network!
+                </div>
             </main>
 
             <!-- If we're not logged in, hide everything except the login button -->
