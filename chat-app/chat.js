@@ -525,12 +525,39 @@ const Seen = {
     setup(props) {
         const $gf = Vue.inject("graffiti");
         const mid = Vue.toRef(props, "mid"); // messageId
-        const peekMode = Vue.toRef(props, "peekmode");
+        const peekmode = Vue.toRef(props, "peekmode");
         const { objects: messageData } = $gf.useObjects([mid]);
-        return { messageData, peekMode, mid };
+        return { messageData, peekmode, mid };
+    },
+    mounted() {
+        setTimeout(this.postSeen, 700);
+    },
+    watch: {
+        peekmode(val, oldVal) {
+            this.postSeen();
+        },
+    },
+    methods: {
+        postSeen() {
+            console.log("considering posting...");
+            if (!this.peekmode && !this.viewers.has(this.$gf.me)) {
+                console.log("posting seen by", this.$gf.me);
+                this.$gf.post({
+                    type: "Read",
+                    object: this.mid,
+                    context: [this.mid],
+                });
+            }
+        },
     },
     computed: {
+        viewers() {
+            return this.processSeen.viewers;
+        },
         seen() {
+            return this.processSeen.seen;
+        },
+        processSeen() {
             const viewers = new Set(); // for avoiding duplicates
             const ret = this.messageData.filter((obj) => {
                 if (obj.type === "Read" && obj.object === this.mid) {
@@ -540,25 +567,13 @@ const Seen = {
                 }
                 return false;
             });
-            if (!this.peekMode && !viewers.has(this.$gf.me)) {
-                console.log("posting seen by", this.$gf.me);
-                this.$gf.post({
-                    type: "Read",
-                    object: this.mid,
-                    context: [this.mid],
-                });
-            }
-            return ret;
+            return { viewers, seen: ret };
         },
         seenTrimmed() {
             return this.seen.slice(0, 3);
         },
         needsEllipses() {
             return this.seen.length > 3;
-        },
-        mySeen() {
-            // whether I've seen this message
-            return this.seen.filter((obj) => obj.actor === this.$gf.me).at(0);
         },
     },
 };
