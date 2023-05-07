@@ -35,10 +35,12 @@ const app = {
         const context = Vue.computed(() =>
             privateMessaging.value ? [$gf.me] : [channel.value]
         );
+        const me = Vue.computed(() => [$gf.me]);
 
         // Initialize the collection of messages associated with the context
         const { objects: messagesRaw } = $gf.useObjects(context);
-        return { channel, privateMessaging, messagesRaw };
+        const { objects: remindersRaw } = $gf.useObjects(me);
+        return { channel, privateMessaging, messagesRaw, remindersRaw };
     },
 
     data() {
@@ -84,32 +86,39 @@ const app = {
             propicUri: undefined,
             messageCache: undefined,
             remindersOpen: false,
+            reminderView: "home",
+            //reminder specs
+            title: "",
+            description: "",
+            notify: true,
+            automaticRemove: true,
         };
     },
 
     computed: {
+        reminders() {
+            const ret = this.remindersRaw.filter(
+                (obj) => obj.type == "Reminder"
+            );
+            return ret;
+        },
         messages() {
-            const idToContent = new Map();
             this.messageCache = new Map();
-            let messages = this.messagesRaw
-                // Filter the "raw" messages for data
-                // that is appropriate for our application
-                // https://www.w3.org/TR/activitystreams-vocabulary/#dfn-note
-                .filter((m) => {
-                    if (
-                        m.type &&
-                        m.type == "Note" &&
-                        (m.content || m.attachment) &&
-                        typeof m.content == "string"
-                    ) {
-                        this.messageCache.set(m.id, {
-                            content: m.content,
-                            actor: m.actor,
-                        });
-                        return true;
-                    }
-                    return false;
-                });
+            let messages = this.messagesRaw.filter((m) => {
+                if (
+                    m.type &&
+                    m.type == "Note" &&
+                    (m.content || m.attachment) &&
+                    typeof m.content == "string"
+                ) {
+                    this.messageCache.set(m.id, {
+                        content: m.content,
+                        actor: m.actor,
+                    });
+                    return true;
+                }
+                return false;
+            });
 
             // Do some more filtering for private messaging
             if (this.privateMessaging) {
@@ -162,8 +171,21 @@ const app = {
     },
 
     methods: {
-        temp() {
-            console.log(this.atBottom);
+        postReminder() {
+            console.log("posting reminder");
+            this.$gf.post({
+                type: "Reminder",
+                title: this.title,
+                description: this.description,
+                context: [this.$gf.me],
+                remindDate: new Date().toString(),
+                notify: this.notify,
+                automaticRemove: this.automaticRemove,
+            });
+            this.reminderView = "home";
+        },
+        deleteReminder(reminder) {
+            this.$gf.remove(reminder);
         },
         startReply(actorId, content, messageId) {
             this.replyingTo = {
@@ -377,7 +399,8 @@ const app = {
             }
 
             // Send!
-            this.$gf.post(message);
+            const msg = this.$gf.post(message);
+            console.log(msg);
             this.messageText = "";
             this.atBottom = true;
             this.file = null;
@@ -532,7 +555,7 @@ const Seen = {
         return { messageData, peekmode, mid };
     },
     mounted() {
-        setTimeout(this.postSeen, 700);
+        setTimeout(this.postSeen, 1000);
     },
     watch: {
         peekmode(val, oldVal) {

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="css/sideNav.css" />
         <link rel="stylesheet" href="css/modal.css" />
         <link rel="stylesheet" href="css/message.css" />
+        <link rel="stylesheet" href="css/reminders.css" />
     </head>
     <body>
         <div id="app">
@@ -56,11 +57,60 @@
                             />
                         </p>
                     </div>
-                    <div v-show="remindersOpen">Ok...</div>
+                    <div v-if="remindersOpen" id="reminders-wrapper">
+                        <h2>Reminders</h2>
+                        <div id="home" v-if="reminderView === 'home'">
+                            <div
+                                v-for="reminder of reminders"
+                                @click="deleteReminder(reminder)"
+                                :key="reminder.id"
+                            >
+                                {{reminder.description}} {{reminder.remindDate}}
+                            </div>
+                            <button @click="reminderView = 'new'">
+                                New Reminder
+                            </button>
+                        </div>
+                        <div id="new" v-else-if="reminderView === 'new'">
+                            <form @submit.prevent="postReminder">
+                                <label>
+                                    Title:
+                                    <input type="text" v-model="title" />
+                                </label>
+                                <label>
+                                    Description:
+                                    <input type="text" v-model="description" />
+                                </label>
+                                <label>
+                                    <input type="checkbox" v-model="notify" />
+                                    Notify me on reminder date
+                                </label>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        v-model="automaticRemove"
+                                    />
+                                    Automatically remove reminder if reminder
+                                    date passes
+                                </label>
+                                <div id="button-holder">
+                                    <button
+                                        type="button"
+                                        @click="reminderView='home'"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button type="submit">
+                                        Create Reminder
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </article>
             </div>
             <nav id="navbar">
-                <h1 @click="temp">Graffiti Chat Network</h1>
+                <h1>Graffiti Chat Network</h1>
                 <div id="navbar-controls">
                     <span
                         ><b v-if="$gf.me"

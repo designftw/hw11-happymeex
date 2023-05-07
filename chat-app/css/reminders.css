@@ -1,0 +1,17 @@
+#reminders-wrapper #home {
+    display: flex;
+    flex-direction: column;
+}
+
+#reminders-wrapper #new form {
+    display: flex;
+    flex-direction: column;
+}
+
+#reminders-wrapper #button-holder {
+    display: flex;
+    gap: 1em;
+}
+#reminders-wrapper #button-holder > * {
+    flex: 1;
+}
