@@ -1,17 +1,37 @@
-#reminders-wrapper #home {
+#reminders-wrapper {
+    height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+#reminders-wrapper > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 #reminders-wrapper #new form {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
+    padding-bottom: 0.7em;
 }
 
 #reminders-wrapper #button-holder {
+    margin-top: auto;
     display: flex;
     gap: 1em;
 }
 #reminders-wrapper #button-holder > * {
     flex: 1;
+}
+
+#reminder-controls {
+    padding-bottom: 0.7em;
+    margin-top: auto;
+    display: flex;
+}
+
+#reminder-controls button:last-child {
+    margin-left: auto;
 }

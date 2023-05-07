@@ -24,6 +24,10 @@ h2 {
     display: none;
 }
 
+.very-hidden {
+    display: none !important;
+}
+
 .invisible {
     transition: 0.3s;
     visibility: hidden;
@@ -49,7 +53,7 @@ h2 {
     padding: 0.5em;
 }
 
-button,
+button:not(:disabled),
 input[type="submit"] {
     cursor: pointer;
     font: inherit;

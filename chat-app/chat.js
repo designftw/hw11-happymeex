@@ -92,14 +92,21 @@ const app = {
             description: "",
             notify: true,
             automaticRemove: true,
+            remindDate: "",
+            //reminder management
+            selectedReminders: new Set(),
+            deletedReminders: new Set(), //need to manually track deleted reminder ids for rendering reasons
+            allSelected: false,
         };
     },
 
     computed: {
         reminders() {
             const ret = this.remindersRaw.filter(
-                (obj) => obj.type == "Reminder"
+                (obj) =>
+                    obj.type == "Reminder" && !this.deletedReminders.has(obj.id)
             );
+            console.log("filtering for reminders", ret);
             return ret;
         },
         messages() {
@@ -171,8 +178,25 @@ const app = {
     },
 
     methods: {
+        temp() {
+            console.log(this.reminders);
+        },
+        openNewReminder() {
+            this.reminderView = "new";
+            setTimeout(() => this.$refs.reminderTitle.focus(), 50);
+        },
+        toggleSelect(reminder) {
+            if (this.selectedReminders.has(reminder)) {
+                this.selectedReminders.delete(reminder);
+                this.allSelected = false;
+            } else {
+                this.selectedReminders.add(reminder);
+                this.allSelected =
+                    this.selectedReminders.size === this.reminders.length;
+            }
+        },
         postReminder() {
-            console.log("posting reminder");
+            console.log("posting reminder for", this.remindDate);
             this.$gf.post({
                 type: "Reminder",
                 title: this.title,
@@ -182,10 +206,34 @@ const app = {
                 notify: this.notify,
                 automaticRemove: this.automaticRemove,
             });
+            this.allSelected = false;
             this.reminderView = "home";
         },
-        deleteReminder(reminder) {
-            this.$gf.remove(reminder);
+        deleteSelected() {
+            const currSelected = [...this.selectedReminders];
+            console.log("deleting", currSelected);
+            //for (const reminder of currSelected) {
+            //    this.deleteReminder(reminder);
+            //}
+            this.deleteReminder(...currSelected);
+            this.selectedReminders = new Set();
+            this.allSelected = false;
+            this.reminders;
+        },
+        selectAll() {
+            if (this.allSelected) {
+                this.selectedReminders = new Set();
+            } else {
+                for (const reminder of this.reminders) {
+                    this.selectedReminders.add(reminder);
+                }
+            }
+            this.allSelected = !this.allSelected;
+        },
+        deleteReminder(...reminders) {
+            for (const reminder of reminders)
+                this.deletedReminders.add(reminder.id);
+            this.$gf.remove(...reminders);
         },
         startReply(actorId, content, messageId) {
             this.replyingTo = {
