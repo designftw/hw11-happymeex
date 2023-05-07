@@ -28,6 +28,10 @@ h2 {
     display: none !important;
 }
 
+.required {
+    color: red;
+}
+
 .invisible {
     transition: 0.3s;
     visibility: hidden;

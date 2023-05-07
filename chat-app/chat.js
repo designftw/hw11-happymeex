@@ -91,16 +91,24 @@ const app = {
             title: "",
             description: "",
             notify: true,
-            automaticRemove: true,
             remindDate: "",
             //reminder management
             selectedReminders: new Set(),
             deletedReminders: new Set(), //need to manually track deleted reminder ids for rendering reasons
             allSelected: false,
+            undoStack: [],
         };
     },
 
     computed: {
+        reminderPopupHeader() {
+            switch (this.reminderView) {
+                case "home":
+                    return "Reminders";
+                case "new":
+                    return "New Reminder";
+            }
+        },
         reminders() {
             const ret = this.remindersRaw.filter(
                 (obj) =>
@@ -181,6 +189,19 @@ const app = {
         temp() {
             console.log(this.reminders);
         },
+        undo() {
+            const undo = this.undoStack.pop();
+            for (const reminder of undo) {
+                this.deletedReminders.delete(reminder);
+                this.$gf.post(reminder);
+            }
+        },
+        resetReminderInputs() {
+            this.title = "";
+            this.description = "";
+            this.notify = true;
+            this.remindDate = "";
+        },
         openNewReminder() {
             this.reminderView = "new";
             setTimeout(() => this.$refs.reminderTitle.focus(), 50);
@@ -202,20 +223,15 @@ const app = {
                 title: this.title,
                 description: this.description,
                 context: [this.$gf.me],
-                remindDate: new Date().toString(),
+                remindDate: this.remindDate,
                 notify: this.notify,
-                automaticRemove: this.automaticRemove,
             });
             this.allSelected = false;
             this.reminderView = "home";
+            this.resetReminderInputs();
         },
         deleteSelected() {
-            const currSelected = [...this.selectedReminders];
-            console.log("deleting", currSelected);
-            //for (const reminder of currSelected) {
-            //    this.deleteReminder(reminder);
-            //}
-            this.deleteReminder(...currSelected);
+            this.deleteReminder(...this.selectedReminders);
             this.selectedReminders = new Set();
             this.allSelected = false;
             this.reminders;
@@ -233,6 +249,7 @@ const app = {
         deleteReminder(...reminders) {
             for (const reminder of reminders)
                 this.deletedReminders.add(reminder.id);
+            this.undoStack.push(reminders);
             this.$gf.remove(...reminders);
         },
         startReply(actorId, content, messageId) {

@@ -15,6 +15,7 @@
     flex-direction: column;
     flex-grow: 1;
     padding-bottom: 0.7em;
+    gap: 0.5em;
 }
 
 #reminders-wrapper #button-holder {

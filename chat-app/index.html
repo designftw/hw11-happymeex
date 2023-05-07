@@ -58,7 +58,7 @@
                         </p>
                     </div>
                     <div v-if="remindersOpen" id="reminders-wrapper">
-                        <h2>Reminders</h2>
+                        <h2>{{reminderPopupHeader}}</h2>
                         <div
                             id="home"
                             :class="(reminderView === 'home') ? '' : 'very-hidden'"
@@ -88,6 +88,12 @@
                                 >
                                     Delete Selected
                                 </button>
+                                <button
+                                    @click="undo"
+                                    :disabled="undoStack.length === 0"
+                                >
+                                    Undo
+                                </button>
                                 <button @click="openNewReminder">
                                     New Reminder
                                 </button>
@@ -99,7 +105,7 @@
                         >
                             <form @submit.prevent="postReminder">
                                 <label>
-                                    Title:
+                                    Title<span class="required">*</span>:
                                     <input
                                         ref="reminderTitle"
                                         type="text"
@@ -111,23 +117,17 @@
                                     <input type="text" v-model="description" />
                                 </label>
                                 <label>
-                                    Reminder date:
+                                    Reminder date<span class="required">*</span
+                                    >:
                                     <input
                                         type="datetime-local"
                                         v-model="remindDate"
+                                        required
                                     />
                                 </label>
                                 <label>
                                     <input type="checkbox" v-model="notify" />
                                     Notify me on reminder date
-                                </label>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        v-model="automaticRemove"
-                                    />
-                                    Automatically remove reminder if reminder
-                                    date passes
                                 </label>
                                 <div id="button-holder">
                                     <button
