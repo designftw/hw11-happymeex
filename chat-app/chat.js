@@ -83,6 +83,7 @@ const app = {
             profilePicture: undefined,
             propicUri: undefined,
             messageCache: undefined,
+            remindersOpen: false,
         };
     },
 
@@ -246,8 +247,9 @@ const app = {
         exitEdit() {
             this.editID = "";
         },
-        toggleSettings() {
-            this.settingsOpen = !this.settingsOpen;
+        closeModal() {
+            this.settingsOpen = false;
+            this.remindersOpen = false;
         },
         async findChat() {
             this.invalidUsernameSearch = false;
