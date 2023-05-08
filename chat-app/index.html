@@ -77,14 +77,24 @@
                                     v-for="reminder of reminders"
                                     :key="reminder.id"
                                 >
-                                    <input
-                                        type="checkbox"
-                                        :checked="selectedReminders.has(reminder)"
-                                        @change="toggleSelect(reminder)"
-                                    />
-                                    <h3>{{reminder.title}}</h3>
-                                    <span>{{reminder.remindDate}} </span>
-                                    <span>{{reminder.chat?.name}}</span>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            :checked="selectedReminders.has(reminder)"
+                                            @change="toggleSelect(reminder)"
+                                        />
+                                        <h3>{{reminder.title}}</h3>
+                                    </label>
+
+                                    <span
+                                        v-if="reminder.chat.type"
+                                        class="chat-name"
+                                        >{{reminder.chat.type === 'private' ?
+                                        '@' : ''}}{{reminder.chat?.name}},</span
+                                    >
+                                    <span class="date"
+                                        >For {{toDate(reminder.remindDate)}}
+                                    </span>
                                     <div class="reminder-data">
                                         <button type="button">
                                             See or edit details

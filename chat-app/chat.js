@@ -3,6 +3,14 @@ import { mixin } from "https://mavue.mavo.io/mavue.js";
 import GraffitiPlugin from "https://graffiti.garden/graffiti-js/plugins/vue/plugin.js";
 import Resolver from "./resolver.js";
 
+/**@param {string} time */
+const getTime = (time) => {
+    //AA:BB
+    const hour = parseInt(time.slice(0, 2));
+    const ampm = hour < 12 ? "AM" : "PM";
+    return `${hour > 12 ? hour - 12 : hour}:${time.slice(3, 5)} ${ampm}`;
+};
+
 const app = {
     // Import MaVue
     mixins: [mixin],
@@ -195,6 +203,13 @@ const app = {
         temp() {
             console.log(this.reminders);
         },
+        toDate(rawDate) {
+            const date = new Date(rawDate).toString().split(" ");
+            if (date[2].startsWith("0")) date[2] = date[2][1];
+            return `${date[0]}, ${date[1]} ${date[2]}, ${getTime(
+                date[4].slice(0, 5)
+            )}`;
+        },
         showReminderTooltip() {
             this.reminderTooltip = true;
             setTimeout(() => {
@@ -262,7 +277,7 @@ const app = {
                 const usernameConfirmed = await this.confirmUsername();
                 if (!usernameConfirmed) return;
             }
-            console.log("posting reminder for", this.remindDate);
+            console.log("posting reminder for", new Date(this.remindDate));
             this.$gf.post({
                 type: "Reminder",
                 title: this.title,

@@ -52,6 +52,7 @@
 .reminder {
     display: flex;
     align-items: center;
+    gap: 0.3em;
 }
 
 .reminder-data {
@@ -61,4 +62,13 @@
 #reminder-holder {
     height: 90%;
     overflow-y: auto;
+}
+
+.reminder h3 {
+    font-size: 1.25em;
+    display: inline-block;
+}
+
+.reminder :is(.date, .chat-name) {
+    color: var(--med-grey);
 }
