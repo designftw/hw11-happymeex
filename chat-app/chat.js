@@ -103,6 +103,7 @@ const app = {
             chat: {
                 type: undefined,
                 name: "",
+                recipientId: undefined,
             },
             usernameConfirmed: false,
             //reminder management
@@ -212,6 +213,12 @@ const app = {
         temp() {
             console.log(this.reminders);
         },
+        openChatFromReminder(chatData) {
+            // chatData takes the same shape as chat data variable
+            this.closeModal();
+            console.log("reminder chat data:", chatData);
+            this.findChat("dummy", chatData);
+        },
         cancelNewOrEdit() {
             if (this.reminderView === "edit") {
                 this.resetReminderInputs();
@@ -235,6 +242,7 @@ const app = {
             reminder.chat = {
                 type: this.chat.type,
                 name: this.chat.name,
+                recipientId: this.chat.recipientId,
             };
             this.reminderToEdit = undefined;
             this.resetReminderInputs();
@@ -249,6 +257,7 @@ const app = {
             this.chat = {
                 type: reminder.chat?.type,
                 name: reminder.chat?.name,
+                recipientId: reminder.chat?.recipientId,
             };
             this.reminderToEdit = reminder;
             this.reminderView = "edit";
@@ -271,9 +280,11 @@ const app = {
             const actor = await this.resolver.usernameToActor(this.chat.name);
             if (actor !== null) {
                 this.usernameConfirmed = true;
+                this.chat.recipientId = actor;
             } else {
                 this.showReminderTooltip();
                 this.usernameConfirmed = false;
+                this.chat.recipientId = undefined;
             }
             this.searchingChat = false;
             return this.usernameConfirmed;
@@ -307,6 +318,7 @@ const app = {
             this.remindDate = "";
             this.chat.name = "";
             this.chat.type = undefined;
+            this.chat.recipientId = undefined;
         },
         openNewReminder() {
             this.reminderView = "new";
@@ -449,25 +461,33 @@ const app = {
             this.settingsOpen = false;
             this.remindersOpen = false;
         },
-        async findChat() {
+        /**@param {{type: string, name: string, recipientId: string} | undefined} reminderParams */
+        async findChat(...params) {
+            const reminderParams = params[1];
             this.invalidUsernameSearch = false;
-            if (this.searchingPrivate) {
+            const searchingPrivate = reminderParams
+                ? reminderParams.type === "private"
+                : this.searchingPrivate;
+            if (searchingPrivate) {
+                const username = reminderParams
+                    ? reminderParams.name
+                    : this.usernameSearch;
                 for (const [i, chat] of this.recentChats.entries()) {
-                    if (chat.username === this.usernameSearch) {
+                    if (chat.username === username) {
                         this.handleSidenav(chat, i);
                         return;
                     }
                 }
                 this.searchingChat = true;
-                const recipientId = await this.resolver.usernameToActor(
-                    this.usernameSearch
-                );
+                const recipientId = reminderParams
+                    ? reminderParams.recipientId
+                    : await this.resolver.usernameToActor(this.usernameSearch);
                 this.searchingChat = false;
                 if (recipientId !== null) {
                     this.changedChats = true;
                     this.messagesLoading = true;
                     this.privateMessaging = true;
-                    this.recipientUsername = this.usernameSearch;
+                    this.recipientUsername = username;
                     this.recipient = recipientId;
                     this.recentChats.unshift({
                         username: this.recipientUsername,
@@ -485,15 +505,19 @@ const app = {
                     }, 150);
                 }
             } else {
+                const channel = reminderParams
+                    ? reminderParams.name
+                    : this.channelSearch;
+                console.log("channel:", channel);
                 for (const [i, chat] of this.recentChats.entries()) {
-                    if (chat.name === this.channelSearch) {
+                    if (chat.name === channel) {
                         this.handleSidenav(chat, i);
                         return;
                     }
                 }
                 this.changedChats = true;
                 this.privateMessaging = false;
-                this.channel = this.channelSearch;
+                this.channel = channel;
                 this.recentChats.unshift({
                     name: this.channel,
                     type: "channel",
@@ -731,7 +755,7 @@ const Seen = {
         return { messageData, peekmode, mid };
     },
     mounted() {
-        setTimeout(this.postSeen, 1000);
+        setTimeout(this.postSeen, 1500);
     },
     watch: {
         peekmode(val, oldVal) {

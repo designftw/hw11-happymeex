@@ -72,6 +72,11 @@
     display: inline-block;
 }
 
+.chat-name:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .reminder :is(.date, .chat-name) {
     color: var(--med-grey);
 }

@@ -89,6 +89,7 @@
                                     <span
                                         v-if="reminder.chat.type"
                                         class="chat-name"
+                                        @click="openChatFromReminder(reminder.chat)"
                                         >{{reminder.chat.type === 'private' ?
                                         '@' : ''}}{{reminder.chat?.name}},</span
                                     >
@@ -215,7 +216,7 @@
                                         type="text"
                                         v-model="chat.name"
                                         :disabled="searchingChat"
-                                        @change="usernameConfirmed = false"
+                                        @change="usernameConfirmed = false; chat.recipientId = undefined"
                                     />
                                     <button
                                         v-if="chat.type === 'private'"
