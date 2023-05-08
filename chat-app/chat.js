@@ -127,10 +127,16 @@ const app = {
             }
         },
         reminders() {
-            const ret = this.remindersRaw.filter(
-                (obj) =>
-                    obj.type == "Reminder" && !this.deletedReminders.has(obj.id)
-            );
+            const ret = this.remindersRaw
+                .filter(
+                    (obj) =>
+                        obj.type == "Reminder" &&
+                        !this.deletedReminders.has(obj.id)
+                )
+                .sort(
+                    (r1, r2) =>
+                        new Date(r1.remindDate) - new Date(r2.remindDate)
+                );
             console.log("filtering for reminders", ret);
             return ret;
         },

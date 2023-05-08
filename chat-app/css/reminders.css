@@ -1,3 +1,8 @@
+#reminder-button {
+    width: 100%;
+    margin-top: 1em;
+}
+
 #reminders-wrapper {
     height: 100%;
     display: flex;
