@@ -73,16 +73,17 @@ input[type="submit"] {
 }
 
 main {
+    --chat-window-width: 70vw;
     height: 90vh;
     display: flex;
 }
 
 main > nav {
-    width: 30vw;
+    width: calc(100vw - var(--chat-window-width));
 }
 
 main > article {
-    width: 70vw;
+    width: var(--chat-window-width);
 }
 
 #chat-window {
