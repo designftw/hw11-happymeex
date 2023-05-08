@@ -227,9 +227,14 @@
                                         Search
                                     </button>
                                 </div>
-                                <label>
+                                <label id="reminder-descriptionHolder">
                                     <b>Description: </b>
-                                    <input type="text" v-model="description" />
+                                    <textarea
+                                        id="reminder-description"
+                                        v-model="description"
+                                        rows="3"
+                                        cols="50"
+                                    ></textarea>
                                 </label>
                             </form>
                             <div id="button-holder">

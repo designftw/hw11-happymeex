@@ -91,3 +91,13 @@
     padding-top: 0.5em;
     border-top: 1px solid var(--light-grey);
 }
+
+#reminder-description {
+    resize: none;
+}
+
+#reminder-descriptionHolder {
+    display: flex;
+    align-items: start;
+    gap: 0.3em;
+}
