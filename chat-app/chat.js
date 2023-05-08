@@ -3,11 +3,11 @@ import { mixin } from "https://mavue.mavo.io/mavue.js";
 import GraffitiPlugin from "https://graffiti.garden/graffiti-js/plugins/vue/plugin.js";
 import Resolver from "./resolver.js";
 
-/**@param {string} time */
+/**@param {string} time takes the form AA:BB, military-style*/
 const getTime = (time) => {
-    //AA:BB
-    const hour = parseInt(time.slice(0, 2));
+    let hour = parseInt(time.slice(0, 2));
     const ampm = hour < 12 ? "AM" : "PM";
+    if (hour === 0) hour = 12;
     return `${hour > 12 ? hour - 12 : hour}:${time.slice(3, 5)} ${ampm}`;
 };
 

@@ -131,7 +131,10 @@
                             id="new"
                             :class="(reminderView === 'new') ? '' : 'very-hidden'"
                         >
-                            <form @submit.prevent="postReminder">
+                            <form
+                                id="reminder-form"
+                                @submit.prevent="postReminder"
+                            >
                                 <label>
                                     <b>
                                         Title<span class="required">*</span>:
@@ -218,18 +221,18 @@
                                     <b>Description: </b>
                                     <input type="text" v-model="description" />
                                 </label>
-                                <div id="button-holder">
-                                    <button
-                                        type="button"
-                                        @click="reminderView='home'"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button type="submit">
-                                        Create Reminder
-                                    </button>
-                                </div>
                             </form>
+                            <div id="button-holder">
+                                <button
+                                    type="button"
+                                    @click="reminderView='home'"
+                                >
+                                    Cancel
+                                </button>
+                                <button form="reminder-form" type="submit">
+                                    Create Reminder
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </article>

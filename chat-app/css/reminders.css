@@ -10,8 +10,10 @@
 }
 
 #reminders-wrapper :is(#home, #new) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     height: calc(var(--modal-height) * 0.8);
-    max-height: calc(var(--modal-height) * 0.8);
 }
 
 #reminders-wrapper > div {
@@ -27,7 +29,6 @@
 }
 
 #reminders-wrapper #button-holder {
-    margin-top: auto;
     display: flex;
     gap: 1em;
 }
@@ -36,9 +37,7 @@
 }
 
 #reminder-controls {
-    margin-top: auto;
     display: flex;
-    height: 10%;
 }
 
 #reminder-controls button:last-child {
@@ -60,7 +59,6 @@
 }
 
 #reminder-holder {
-    height: 90%;
     overflow-y: auto;
 }
 
@@ -71,4 +69,15 @@
 
 .reminder :is(.date, .chat-name) {
     color: var(--med-grey);
+}
+
+:is(#reminder-controls, #button-holder) button {
+    padding: 0.3em 0.5em;
+    height: fit-content;
+}
+
+#reminder-controls,
+#button-holder {
+    padding-top: 0.5em;
+    border-top: 1px solid var(--light-grey);
 }
