@@ -111,6 +111,7 @@ const app = {
             allSelected: false,
             undoStack: [],
             reminderTooltip: false,
+            reminderToEdit: undefined,
         };
     },
 
@@ -121,6 +122,8 @@ const app = {
                     return "Reminders";
                 case "new":
                     return "New Reminder";
+                case "edit":
+                    return "Edit Reminder";
             }
         },
         reminders() {
@@ -202,6 +205,41 @@ const app = {
     methods: {
         temp() {
             console.log(this.reminders);
+        },
+        handleReminderForm() {
+            if (this.reminderView === "new") {
+                this.postReminder();
+            } else if (this.reminderView === "edit") {
+                this.saveEditReminder();
+            }
+        },
+        saveEditReminder() {
+            console.log("saving edits!");
+            const reminder = this.reminderToEdit;
+            reminder.title = this.title;
+            reminder.description = this.description;
+            reminder.notify = this.notify;
+            reminder.remindDate = this.remindDate;
+            reminder.chat = {
+                type: this.chat.type,
+                name: this.chat.name,
+            };
+            this.reminderToEdit = undefined;
+            this.resetReminderInputs();
+            this.reminderView = "home";
+        },
+        startEditReminder(reminder) {
+            console.log("editing reminder now");
+            this.title = reminder.title;
+            this.description = reminder.description;
+            this.notify = reminder.notify;
+            this.remindDate = reminder.remindDate;
+            this.chat = {
+                type: reminder.chat?.type,
+                name: reminder.chat?.name,
+            };
+            this.reminderToEdit = reminder;
+            this.reminderView = "edit";
         },
         toDate(rawDate) {
             const date = new Date(rawDate).toString().split(" ");

@@ -96,7 +96,10 @@
                                         >For {{toDate(reminder.remindDate)}}
                                     </span>
                                     <div class="reminder-data">
-                                        <button type="button">
+                                        <button
+                                            type="button"
+                                            @click="startEditReminder(reminder)"
+                                        >
                                             See or edit details
                                         </button>
                                         <button
@@ -135,11 +138,11 @@
                         </div>
                         <div
                             id="new"
-                            :class="(reminderView === 'new') ? '' : 'very-hidden'"
+                            :class="(reminderView === 'new' || reminderView === 'edit') ? '' : 'very-hidden'"
                         >
                             <form
                                 id="reminder-form"
-                                @submit.prevent="postReminder"
+                                @submit.prevent="handleReminderForm"
                             >
                                 <label>
                                     <b>
@@ -236,7 +239,8 @@
                                     Cancel
                                 </button>
                                 <button form="reminder-form" type="submit">
-                                    Create Reminder
+                                    {{reminderView === 'new' ? "Create Reminder"
+                                    : "Save Edits"}}
                                 </button>
                             </div>
                         </div>
