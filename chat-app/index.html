@@ -73,6 +73,7 @@
                                     @change="toggleSelect(reminder)"
                                 />
                                 {{reminder.title}} {{reminder.remindDate}}
+                                {{reminder.chat?.name}}
                             </div>
                             <div id="reminder-controls">
                                 <button
@@ -105,20 +106,22 @@
                         >
                             <form @submit.prevent="postReminder">
                                 <label>
-                                    Title<span class="required">*</span>:
+                                    <b>
+                                        Title<span class="required">*</span>:
+                                    </b>
                                     <input
                                         ref="reminderTitle"
                                         type="text"
                                         v-model="title"
+                                        required
                                     />
                                 </label>
                                 <label>
-                                    Description:
-                                    <input type="text" v-model="description" />
-                                </label>
-                                <label>
-                                    Reminder date<span class="required">*</span
-                                    >:
+                                    <b>
+                                        Reminder date<span class="required"
+                                            >*</span
+                                        >:
+                                    </b>
                                     <input
                                         type="datetime-local"
                                         v-model="remindDate"
@@ -128,6 +131,65 @@
                                 <label>
                                     <input type="checkbox" v-model="notify" />
                                     Notify me on reminder date
+                                </label>
+                                <div>
+                                    <b>Chat: </b>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            :value="undefined"
+                                            v-model="chat.type"
+                                        />
+                                        None
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            value="channel"
+                                            v-model="chat.type"
+                                        />
+                                        Public channel
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            value="private"
+                                            v-model="chat.type"
+                                        />
+                                        Private messaging
+                                    </label>
+                                </div>
+                                <div
+                                    id="reminder-chatSearcher"
+                                    v-if="chat.type"
+                                >
+                                    <div
+                                        :class="`tooltip-hidden ${reminderTooltip ? 'tooltip-top' : ''}`"
+                                    >
+                                        User not found!
+                                    </div>
+                                    <span v-if="chat.type === 'private'"
+                                        >Username: @</span
+                                    >
+                                    <span v-else>Channel name: </span>
+                                    <input
+                                        type="text"
+                                        v-model="chat.name"
+                                        :disabled="searchingChat"
+                                        @change="usernameConfirmed = false"
+                                    />
+                                    <button
+                                        v-if="chat.type === 'private'"
+                                        type="button"
+                                        @click="confirmUsername"
+                                        :disabled="searchingChat"
+                                    >
+                                        Search
+                                    </button>
+                                </div>
+                                <label>
+                                    <b>Description: </b>
+                                    <input type="text" v-model="description" />
                                 </label>
                                 <div id="button-holder">
                                     <button

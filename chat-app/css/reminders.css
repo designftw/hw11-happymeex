@@ -36,3 +36,7 @@
 #reminder-controls button:last-child {
     margin-left: auto;
 }
+
+#reminder-chatSearcher {
+    position: relative;
+}

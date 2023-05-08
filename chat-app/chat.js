@@ -92,11 +92,17 @@ const app = {
             description: "",
             notify: true,
             remindDate: "",
+            chat: {
+                type: undefined,
+                name: "",
+            },
+            usernameConfirmed: false,
             //reminder management
             selectedReminders: new Set(),
             deletedReminders: new Set(), //need to manually track deleted reminder ids for rendering reasons
             allSelected: false,
             undoStack: [],
+            reminderTooltip: false,
         };
     },
 
@@ -189,6 +195,24 @@ const app = {
         temp() {
             console.log(this.reminders);
         },
+        showReminderTooltip() {
+            this.reminderTooltip = true;
+            setTimeout(() => {
+                this.reminderTooltip = false;
+            }, 3000);
+        },
+        async confirmUsername() {
+            this.searchingChat = true;
+            const actor = await this.resolver.usernameToActor(this.chat.name);
+            if (actor !== null) {
+                this.usernameConfirmed = true;
+            } else {
+                this.showReminderTooltip();
+                this.usernameConfirmed = false;
+            }
+            this.searchingChat = false;
+            return this.usernameConfirmed;
+        },
         undo() {
             const undo = this.undoStack.pop();
             for (const reminder of undo) {
@@ -201,6 +225,8 @@ const app = {
             this.description = "";
             this.notify = true;
             this.remindDate = "";
+            this.chat.name = "";
+            this.chat.type = undefined;
         },
         openNewReminder() {
             this.reminderView = "new";
@@ -216,7 +242,11 @@ const app = {
                     this.selectedReminders.size === this.reminders.length;
             }
         },
-        postReminder() {
+        async postReminder() {
+            if (this.chat.type === "private" && !this.usernameConfirmed) {
+                const usernameConfirmed = await this.confirmUsername();
+                if (!usernameConfirmed) return;
+            }
             console.log("posting reminder for", this.remindDate);
             this.$gf.post({
                 type: "Reminder",
@@ -225,6 +255,7 @@ const app = {
                 context: [this.$gf.me],
                 remindDate: this.remindDate,
                 notify: this.notify,
+                chat: this.chat,
             });
             this.allSelected = false;
             this.reminderView = "home";
