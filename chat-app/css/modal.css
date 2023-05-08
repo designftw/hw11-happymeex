@@ -35,7 +35,8 @@ h2 {
 
 #settings-wrapper,
 #reminders-wrapper {
-    padding: 0 16px;
+    padding: 0 16px 8px;
+    box-sizing: border-box;
 }
 
 #name-editor form {

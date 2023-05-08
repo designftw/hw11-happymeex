@@ -9,7 +9,7 @@
     height: calc(var(--modal-height) * 0.2);
 }
 
-#reminders-wrapper > div {
+#reminders-wrapper :is(#home, #new) {
     height: calc(var(--modal-height) * 0.8);
     max-height: calc(var(--modal-height) * 0.8);
 }
@@ -23,6 +23,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5em;
+    flex-grow: 1;
 }
 
 #reminders-wrapper #button-holder {
