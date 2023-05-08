@@ -63,17 +63,26 @@
                             id="home"
                             :class="(reminderView === 'home') ? '' : 'very-hidden'"
                         >
-                            <div
-                                v-for="reminder of reminders"
-                                :key="reminder.id"
-                            >
-                                <input
-                                    type="checkbox"
-                                    :checked="selectedReminders.has(reminder)"
-                                    @change="toggleSelect(reminder)"
-                                />
-                                {{reminder.title}} {{reminder.remindDate}}
-                                {{reminder.chat?.name}}
+                            <div id="reminder-holder">
+                                <div
+                                    class="reminder"
+                                    v-for="reminder of reminders"
+                                    :key="reminder.id"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        :checked="selectedReminders.has(reminder)"
+                                        @change="toggleSelect(reminder)"
+                                    />
+                                    <h3>{{reminder.title}}</h3>
+                                    <span>{{reminder.remindDate}} </span>
+                                    <span>{{reminder.chat?.name}}</span>
+                                    <div class="reminder-data">
+                                        <button type="button">
+                                            See or edit details
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div id="reminder-controls">
                                 <button
@@ -168,10 +177,10 @@
                                     >
                                         User not found!
                                     </div>
-                                    <span v-if="chat.type === 'private'"
-                                        >Username: @</span
+                                    <b v-if="chat.type === 'private'"
+                                        >Username: @</b
                                     >
-                                    <span v-else>Channel name: </span>
+                                    <b v-else>Channel name: </b>
                                     <input
                                         type="text"
                                         v-model="chat.name"

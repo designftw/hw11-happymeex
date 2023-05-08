@@ -4,17 +4,24 @@
     flex-direction: column;
 }
 
+#reminders-wrapper h2 {
+    margin: 0;
+    height: calc(var(--modal-height) * 0.2);
+}
+
+#reminders-wrapper > div {
+    height: calc(var(--modal-height) * 0.8);
+    max-height: calc(var(--modal-height) * 0.8);
+}
+
 #reminders-wrapper > div {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
 }
 
 #reminders-wrapper #new form {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    padding-bottom: 0.7em;
     gap: 0.5em;
 }
 
@@ -28,9 +35,9 @@
 }
 
 #reminder-controls {
-    padding-bottom: 0.7em;
     margin-top: auto;
     display: flex;
+    height: 10%;
 }
 
 #reminder-controls button:last-child {
@@ -39,4 +46,18 @@
 
 #reminder-chatSearcher {
     position: relative;
+}
+
+.reminder {
+    display: flex;
+    align-items: center;
+}
+
+.reminder-data {
+    margin-left: auto;
+}
+
+#reminder-holder {
+    height: 90%;
+    overflow-y: auto;
 }

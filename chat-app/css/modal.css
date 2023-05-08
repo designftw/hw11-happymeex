@@ -15,9 +15,10 @@
 }
 
 .modal {
+    --modal-height: 60vh;
     position: absolute;
     width: 60vw;
-    height: 60vh;
+    height: var(--modal-height);
     background-color: white;
     border-radius: 8px;
 }

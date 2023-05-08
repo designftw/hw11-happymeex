@@ -215,10 +215,25 @@ const app = {
         },
         undo() {
             const undo = this.undoStack.pop();
+            console.log("undos:", undo);
             for (const reminder of undo) {
-                this.deletedReminders.delete(reminder);
-                this.$gf.post(reminder);
+                //this.deletedReminders.delete(reminder);
+                this.$gf.post(this.copyReminder(reminder));
             }
+        },
+        copyReminder(reminder) {
+            return {
+                type: "Reminder",
+                title: reminder.title,
+                description: reminder.description,
+                context: [this.$gf.me],
+                remindDate: reminder.remindDate,
+                notify: reminder.notify,
+                chat: {
+                    type: reminder.chat.type,
+                    name: reminder.chat.name,
+                },
+            };
         },
         resetReminderInputs() {
             this.title = "";
