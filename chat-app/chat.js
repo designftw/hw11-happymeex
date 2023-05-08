@@ -206,6 +206,12 @@ const app = {
         temp() {
             console.log(this.reminders);
         },
+        cancelNewOrEdit() {
+            if (this.reminderView === "edit") {
+                this.resetReminderInputs();
+            }
+            this.reminderView = "home";
+        },
         handleReminderForm() {
             if (this.reminderView === "new") {
                 this.postReminder();
