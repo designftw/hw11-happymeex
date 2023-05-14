@@ -17,7 +17,16 @@ const getTime = (time) => {
  * @returns the date obtained by adding `minutes` minutes to `date`
  */
 const shiftedDate = (date, minutes) => {
-    return new Date(date.getDate() + 1000 * minutes * 60);
+    const ret = new Date(date.getTime() + 1000 * minutes * 60);
+    return ret;
+};
+
+/**
+ *
+ * @param {string} dateString
+ */
+const secondsRemoved = (dateString) => {
+    return dateString.slice(0, 16);
 };
 
 const app = {
@@ -218,24 +227,18 @@ const app = {
             );
         },
         snoozeReminder(reminder, minutes) {
-            reminder.remindDate = shiftedDate(reminder.remindDate, minutes);
-            this.dismissQueuedReminder(reminder);
+            reminder.remindDate = secondsRemoved(
+                shiftedDate(new Date(Date.now()), minutes).toISOString()
+            );
+            console.log("snoozed to:", reminder.remindDate);
+            this.dismissQueuedReminder();
         },
         /** Removes reminder from queue but does not kill it */
-        dismissQueuedReminder(reminder) {
-            if (reminder !== undefined) {
-                for (const [r, i] of this.reminderQueue.entries()) {
-                    if (reminder === r) {
-                        this.reminderQueue.splice(i, 1);
-                        return;
-                    }
-                }
-            } else {
-                // remove current one by default
-                this.reminderQueue.splice(this.activeReminder, 1);
-                if (this.activeReminder >= this.reminderQueue.length) {
-                    this.activeReminder = Math.max(0, this.activeReminder - 1);
-                }
+        dismissQueuedReminder() {
+            // remove current one by default
+            this.reminderQueue.splice(this.activeReminder, 1);
+            if (this.activeReminder >= this.reminderQueue.length) {
+                this.activeReminder = Math.max(0, this.activeReminder - 1);
             }
             if (this.reminderQueue.length === 0) {
                 this.closeModal();

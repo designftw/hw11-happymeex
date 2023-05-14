@@ -269,13 +269,11 @@
                                     </button>
                                 </div>
                                 <div>
-                                    <button
-                                        @click="dismissQueuedReminder(undefined)"
-                                    >
+                                    <button @click="dismissQueuedReminder()">
                                         Dismiss
                                     </button>
                                     <button
-                                        @click="() => {deleteReminder(currReminder); dismissQueuedReminder(undefined)}"
+                                        @click="() => {deleteReminder(currReminder); dismissQueuedReminder()}"
                                     >
                                         Delete
                                     </button>
