@@ -261,11 +261,13 @@
                             :class="(reminderView === 'reminder') ? '' : 'very-hidden'"
                         >
                             <div v-if="currReminder">
-                                <div><b>Title:</b> {{currReminder.title}}</div>
-                                <div>
-                                    <b>Description: </b>
-                                    {{currReminder.description}}
-                                </div>
+                                <b id="notif-title">{{currReminder.title}}</b>
+                                <span style="color: var(--med-grey)">
+                                    {{" on " +
+                                    toDate(currReminder.remindDate)}}</span
+                                >
+                                <b></b>
+                                <div>{{currReminder.description}}</div>
                             </div>
                             <div id="remind-handlers">
                                 <div>
