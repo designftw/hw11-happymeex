@@ -369,7 +369,11 @@
                             v-if="!searchingPrivate"
                         >
                             <label for="channel"> <b>Channel name: </b> </label>
-                            <input id="channel" v-model="channelSearch" />
+                            <input
+                                id="channel"
+                                v-model="channelSearch"
+                                required
+                            />
                             <button :disabled="searchingChat">Open chat</button>
                         </form>
                         <form @submit.prevent="findChat" v-else>
