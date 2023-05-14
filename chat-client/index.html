@@ -18,7 +18,12 @@
             >
                 <article ref="modal" class="modal" @click.stop="0">
                     <div id="settings-wrapper" v-show="settingsOpen">
-                        <h2>Settings</h2>
+                        <h2>
+                            Settings
+                            <span @click="closeModal" class="modal-closeButton"
+                                >&times;</span
+                            >
+                        </h2>
                         <p id="name-editor">
                             <b>In-chat name:</b>
                             <name :actor="$gf.me" :editable="true"></name>
@@ -66,6 +71,9 @@
                             "
                         >
                             {{reminderPopupHeader}}
+                            <span @click="closeModal" class="modal-closeButton"
+                                >&times;</span
+                            >
                         </h2>
                         <div
                             id="home"

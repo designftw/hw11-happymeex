@@ -39,6 +39,28 @@ h2 {
     box-sizing: border-box;
 }
 
+:is(#settings-wrapper, #reminders-wrapper) > h2 {
+    position: relative;
+}
+
+.modal-closeButton {
+    position: absolute;
+    right: 0;
+    font-size: 40px;
+    border-radius: 50%;
+    height: 1em;
+    width: 1em;
+    padding: 0.1em;
+    display: flex;
+    justify-content: center;
+}
+
+.modal-closeButton:hover {
+    transition: 0.1s;
+    cursor: pointer;
+    background-color: rgba(0 0 0 / 10%);
+}
+
 #name-editor form {
     display: inline-block;
 }
