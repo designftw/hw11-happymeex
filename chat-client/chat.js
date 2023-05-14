@@ -237,6 +237,7 @@ const app = {
             );
             console.log("snoozed to:", reminder.remindDate);
             this.dismissQueuedReminder();
+            this.scheduleReminder(reminder);
         },
         /** Removes reminder from queue but does not kill it */
         dismissQueuedReminder() {
