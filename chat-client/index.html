@@ -165,6 +165,7 @@
                                     <input
                                         type="datetime-local"
                                         v-model="remindDate"
+                                        :min="new Date()"
                                         required
                                     />
                                 </label>
@@ -245,6 +246,69 @@
                                     {{reminderView === 'new' ? "Create Reminder"
                                     : "Save Edits"}}
                                 </button>
+                            </div>
+                        </div>
+                        <div
+                            id="remind"
+                            :class="(reminderView === 'reminder') ? '' : 'very-hidden'"
+                        >
+                            <div v-if="currReminder">
+                                <div><b>Title:</b> {{currReminder.title}}</div>
+                                <div>
+                                    <b>Description: </b>
+                                    {{currReminder.description}}
+                                </div>
+                            </div>
+                            <div id="remind-handlers">
+                                <div>
+                                    <button
+                                        :disabled="activeReminder === 0"
+                                        @click="activeReminder--"
+                                    >
+                                        Previous
+                                    </button>
+                                </div>
+                                <div>
+                                    <button
+                                        @click="dismissQueuedReminder(undefined)"
+                                    >
+                                        Dismiss
+                                    </button>
+                                    <button
+                                        @click="() => {deleteReminder(currReminder); dismissQueuedReminder(undefined)}"
+                                    >
+                                        Delete
+                                    </button>
+                                    <button
+                                        @click="snoozeReminder(currReminder, snoozeTime)"
+                                        :disabled="!(snoozeTime > 0)"
+                                    >
+                                        Snooze
+                                    </button>
+                                    <label>
+                                        <input
+                                            id="snooze-input"
+                                            type="number"
+                                            min="1"
+                                            step="1"
+                                            v-model="snoozeTime"
+                                        />
+                                        Minutes
+                                    </label>
+                                    <button></button>
+                                    <label v-if="reminderQueue.length > 1">
+                                        <input type="checkbox" />
+                                        Apply to all {{reminderQueue.length}}
+                                    </label>
+                                </div>
+                                <div>
+                                    <button
+                                        :disabled="activeReminder === reminderQueue.length - 1"
+                                        @click="activeReminder++"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

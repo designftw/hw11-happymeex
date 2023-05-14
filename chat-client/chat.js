@@ -11,6 +11,15 @@ const getTime = (time) => {
     return `${hour > 12 ? hour - 12 : hour}:${time.slice(3, 5)} ${ampm}`;
 };
 
+/**
+ * @param {Date} date
+ * @param {number} minutes
+ * @returns the date obtained by adding `minutes` minutes to `date`
+ */
+const shiftedDate = (date, minutes) => {
+    return new Date(date.getDate() + 1000 * minutes * 60);
+};
+
 const app = {
     // Import MaVue
     mixins: [mixin],
@@ -28,11 +37,15 @@ const app = {
             }
         }, 10);
         this.$refs.messageBarInput.focus();
+        //console.log("from setup:", this.reminders);
+        for (const reminder of this.reminders) {
+            this.scheduleReminder(reminder);
+        }
     },
 
     setup() {
         // Initialize the name of the channel we're chatting in
-        const channel = Vue.ref("secret-meex-2");
+        const channel = Vue.ref("secret-meex");
 
         // And a flag for whether or not we're private-messaging
         const privateMessaging = Vue.ref(false);
@@ -74,7 +87,7 @@ const app = {
             selectedChat: 0,
             recentChats: [
                 {
-                    name: "secret-meex-2",
+                    name: "secret-meex",
                     type: "channel",
                 },
             ],
@@ -113,10 +126,17 @@ const app = {
             undoStack: [],
             reminderTooltip: false,
             reminderToEdit: undefined,
+            // reminding
+            reminderQueue: [],
+            activeReminder: 0,
+            snoozeTime: 5, //minutes to snooze
         };
     },
 
     computed: {
+        currReminder() {
+            return this.reminderQueue[this.activeReminder];
+        },
         reminderPopupHeader() {
             switch (this.reminderView) {
                 case "home":
@@ -125,6 +145,10 @@ const app = {
                     return "New Reminder";
                 case "edit":
                     return "Edit Reminder";
+                case "reminder":
+                    return `${this.reminderQueue.length} reminder notification${
+                        this.reminderQueue.length > 1 ? "s" : ""
+                    }`;
             }
         },
         reminders() {
@@ -185,33 +209,55 @@ const app = {
         },
     },
 
-    watch: {
-        messages(messages) {
-            const withImages = messages.filter((msg) => {
-                return (
-                    msg.attachment &&
-                    msg.attachment.type === "Image" &&
-                    msg.attachment.magnet
-                );
-            });
-            //console.log(withImages.length, "messages with images");
-            withImages.forEach(async (msg) => {
-                const uri = msg.attachment.magnet;
-                if (!this.downloadedImages[uri]) {
-                    //console.log("undownloaded image");
-                    //const blob = await this.$gf.media.fetch(uri);
-                    //this.downloadedImages[uri] = URL.createObjectURL(blob);
-                    this.downloadedImages[uri] = true;
-                } else {
-                    //console.log("already seen");
-                }
-            });
-        },
-    },
-
     methods: {
         temp() {
-            console.log(this.reminders);
+            console.log(
+                this.reminderView,
+                this.activeReminder,
+                this.reminderQueue
+            );
+        },
+        snoozeReminder(reminder, minutes) {
+            reminder.remindDate = shiftedDate(reminder.remindDate, minutes);
+            this.dismissQueuedReminder(reminder);
+        },
+        /** Removes reminder from queue but does not kill it */
+        dismissQueuedReminder(reminder) {
+            if (reminder !== undefined) {
+                for (const [r, i] of this.reminderQueue.entries()) {
+                    if (reminder === r) {
+                        this.reminderQueue.splice(i, 1);
+                        return;
+                    }
+                }
+            } else {
+                // remove current one by default
+                this.reminderQueue.splice(this.activeReminder, 1);
+                if (this.activeReminder >= this.reminderQueue.length) {
+                    this.activeReminder = Math.max(0, this.activeReminder - 1);
+                }
+            }
+            if (this.reminderQueue.length === 0) {
+                this.closeModal();
+                this.reminderView = "home";
+            }
+        },
+        triggerReminder(reminder) {
+            this.reminderQueue.push(reminder);
+            this.reminderView = "reminder";
+            this.remindersOpen = true;
+        },
+        scheduleReminder(reminder) {
+            const date = new Date(reminder.remindDate);
+            console.log("Scheduling reminder for", date);
+            const secondsUntil = date - new Date();
+            if (secondsUntil <= 0) {
+                this.triggerReminder(reminder);
+            } else {
+                setTimeout(() => {
+                    this.triggerReminder(reminder);
+                }, secondsUntil);
+            }
         },
         openChatFromReminder(chatData) {
             // chatData takes the same shape as chat data variable
@@ -625,6 +671,29 @@ const app = {
             message.content = this.editText;
             // And clear the edit mark
             this.editID = "";
+        },
+    },
+    watch: {
+        messages(messages) {
+            const withImages = messages.filter((msg) => {
+                return (
+                    msg.attachment &&
+                    msg.attachment.type === "Image" &&
+                    msg.attachment.magnet
+                );
+            });
+            //console.log(withImages.length, "messages with images");
+            withImages.forEach(async (msg) => {
+                const uri = msg.attachment.magnet;
+                if (!this.downloadedImages[uri]) {
+                    //console.log("undownloaded image");
+                    //const blob = await this.$gf.media.fetch(uri);
+                    //this.downloadedImages[uri] = URL.createObjectURL(blob);
+                    this.downloadedImages[uri] = true;
+                } else {
+                    //console.log("already seen");
+                }
+            });
         },
     },
 };

@@ -14,7 +14,7 @@
     height: calc(var(--modal-height) * 0.2);
 }
 
-#reminders-wrapper :is(#home, #new) {
+#reminders-wrapper :is(#home, #new, #remind) {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -81,13 +81,14 @@
     color: var(--med-grey);
 }
 
-:is(#reminder-controls, #button-holder) button {
+:is(#reminder-controls, #button-holder, #remind-handlers) button {
     padding: 0.3em 0.5em;
     height: fit-content;
 }
 
 #reminder-controls,
-#button-holder {
+#button-holder,
+#remind-handlers {
     padding-top: 0.5em;
     border-top: 1px solid var(--light-grey);
 }
@@ -100,4 +101,13 @@
     display: flex;
     align-items: start;
     gap: 0.3em;
+}
+
+#remind-handlers {
+    display: flex;
+    justify-content: space-between;
+}
+
+#snooze-input {
+    width: 5ch;
 }
