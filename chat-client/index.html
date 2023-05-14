@@ -268,14 +268,9 @@
                                         Previous
                                     </button>
                                 </div>
-                                <div>
+                                <div id="notif-controls">
                                     <button @click="dismissQueuedReminder()">
                                         Dismiss
-                                    </button>
-                                    <button
-                                        @click="() => {deleteReminder(currReminder); dismissQueuedReminder()}"
-                                    >
-                                        Delete
                                     </button>
                                     <button
                                         @click="snoozeReminder(currReminder, snoozeTime)"
@@ -293,7 +288,11 @@
                                         />
                                         Minutes
                                     </label>
-                                    <button></button>
+                                    <button
+                                        @click="() => {deleteReminder(currReminder); dismissQueuedReminder()}"
+                                    >
+                                        Delete
+                                    </button>
                                     <label v-if="reminderQueue.length > 1">
                                         <input type="checkbox" />
                                         Apply to all {{reminderQueue.length}}

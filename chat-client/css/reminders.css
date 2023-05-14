@@ -111,3 +111,9 @@
 #snooze-input {
     width: 5ch;
 }
+
+#notif-controls {
+    display: flex;
+    gap: 0.3em;
+    align-items: center;
+}

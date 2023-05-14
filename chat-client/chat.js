@@ -34,6 +34,13 @@ const formatTime = (date) => {
     return ret.slice(0, 11) + time.slice(0, 5);
 };
 
+/**
+ * @returns the truncated ISO string corresponding to tomorrow
+ */
+const defaultDate = () => {
+    return new Date(Date.now() + 24 * 60 * 60 * 1000);
+};
+
 const app = {
     // Import MaVue
     mixins: [mixin],
@@ -237,7 +244,7 @@ const app = {
             );
             console.log("snoozed to:", reminder.remindDate);
             this.dismissQueuedReminder();
-            this.scheduleReminder(reminder);
+            this.scheduleReminder(reminder, minutes * 60 * 1000);
         },
         /** Removes reminder from queue but does not kill it */
         dismissQueuedReminder() {
@@ -252,22 +259,28 @@ const app = {
             }
         },
         triggerReminder(reminder) {
-            if (this.reminders.includes(reminder)) {
+            console.log("triggering reminder");
+            if (
+                this.reminders
+                    .map((reminder) => reminder.id)
+                    .includes(reminder.id)
+            ) {
                 this.reminderQueue.push(reminder);
                 this.reminderView = "reminder";
                 this.remindersOpen = true;
             }
         },
-        scheduleReminder(reminder) {
+        scheduleReminder(reminder, time = undefined) {
             const date = new Date(reminder.remindDate);
             console.log("Scheduling reminder for", date);
-            const secondsUntil = date - new Date();
-            if (secondsUntil <= 0) {
+            const delay =
+                time === undefined ? date.getTime() - Date.now() : time;
+            if (delay <= 0) {
                 this.triggerReminder(reminder);
             } else {
                 setTimeout(() => {
                     this.triggerReminder(reminder);
-                }, secondsUntil);
+                }, delay);
             }
         },
         openChatFromReminder(chatData) {
@@ -379,6 +392,7 @@ const app = {
         },
         openNewReminder() {
             this.reminderView = "new";
+            this.remindDate = formatTime(defaultDate());
             setTimeout(() => this.$refs.reminderTitle.focus(), 50);
         },
         toggleSelect(reminder) {
