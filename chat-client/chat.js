@@ -22,11 +22,16 @@ const shiftedDate = (date, minutes) => {
 };
 
 /**
+ * Formats a date as an ISO string in the local time zone with no seconds
  *
- * @param {string} dateString
+ * @param {Date} date
+ * @returns {string}
  */
-const secondsRemoved = (dateString) => {
-    return dateString.slice(0, 16);
+const formatTime = (date) => {
+    let time = date.toLocaleTimeString();
+    if (time.indexOf(":") === 1) time = "0" + time;
+    let ret = date.toISOString();
+    return ret.slice(0, 11) + time.slice(0, 5);
 };
 
 const app = {
@@ -227,8 +232,8 @@ const app = {
             );
         },
         snoozeReminder(reminder, minutes) {
-            reminder.remindDate = secondsRemoved(
-                shiftedDate(new Date(Date.now()), minutes).toISOString()
+            reminder.remindDate = formatTime(
+                shiftedDate(new Date(Date.now()), minutes)
             );
             console.log("snoozed to:", reminder.remindDate);
             this.dismissQueuedReminder();
@@ -246,9 +251,11 @@ const app = {
             }
         },
         triggerReminder(reminder) {
-            this.reminderQueue.push(reminder);
-            this.reminderView = "reminder";
-            this.remindersOpen = true;
+            if (this.reminders.includes(reminder)) {
+                this.reminderQueue.push(reminder);
+                this.reminderView = "reminder";
+                this.remindersOpen = true;
+            }
         },
         scheduleReminder(reminder) {
             const date = new Date(reminder.remindDate);
