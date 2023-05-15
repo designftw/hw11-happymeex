@@ -121,3 +121,7 @@
 #notif-title {
     font-size: 1.2em;
 }
+
+#notif-holder {
+    overflow-y: auto;
+}

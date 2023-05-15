@@ -264,14 +264,29 @@
                             id="remind"
                             :class="(reminderView === 'reminder') ? '' : 'very-hidden'"
                         >
-                            <div v-if="currReminder">
+                            <div id="notif-holder" v-if="currReminder">
                                 <b id="notif-title">{{currReminder.title}}</b>
                                 <span style="color: var(--med-grey)">
                                     {{" on " +
                                     toDate(currReminder.remindDate)}}</span
                                 >
-                                <b></b>
-                                <div>{{currReminder.description}}</div>
+                                <p v-if="currReminder.chat.type">
+                                    <b>Associated chat: </b>
+                                    <span
+                                        class="chat-name"
+                                        @click="openChatFromReminder(currReminder.chat)"
+                                        style="color: var(--med-grey)"
+                                    >
+                                        {{currReminder.chat.type === 'private' ?
+                                        '@' : ''}}{{currReminder.chat?.name}}
+                                    </span>
+                                </p>
+                                <p v-if="currReminder.description.length > 0">
+                                    <b>Description: </b>
+                                    <span style="color: var(--med-grey)">
+                                        {{currReminder.description}}
+                                    </span>
+                                </p>
                             </div>
                             <div id="remind-handlers">
                                 <div>
