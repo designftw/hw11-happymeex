@@ -141,10 +141,13 @@ const app = {
             },
             usernameConfirmed: false,
             //reminder management
-            selectedReminders: new Set(),
+            viewUpcoming: true,
+            selectedUpcomingReminders: new Set(),
+            selectedPastReminders: new Set(),
             deletedReminders: new Set(), //need to manually track deleted reminder ids for rendering reasons
             allSelected: false,
-            undoStack: [],
+            undoStackUpcoming: [],
+            undoStackPast: [],
             reminderTooltip: false,
             reminderToEdit: undefined,
             // reminding
@@ -155,13 +158,25 @@ const app = {
     },
 
     computed: {
+        selectedReminders() {
+            return this.viewUpcoming
+                ? this.selectedUpcomingReminders
+                : this.selectedPastReminders;
+        },
+        undoStack() {
+            return this.viewUpcoming
+                ? this.undoStackUpcoming
+                : this.undoStackPast;
+        },
         currReminder() {
             return this.reminderQueue[this.activeReminder];
         },
         reminderPopupHeader() {
             switch (this.reminderView) {
                 case "home":
-                    return "Reminders";
+                    return `${
+                        this.viewUpcoming ? "Upcoming" : "Past"
+                    } Reminders`;
                 case "new":
                     return "New Reminder";
                 case "edit":
@@ -185,6 +200,21 @@ const app = {
                 );
             console.log("filtering for reminders", ret);
             return ret;
+        },
+        upcomingReminders() {
+            return this.reminders.filter((reminder) => {
+                return new Date(reminder.remindDate) > new Date(Date.now());
+            });
+        },
+        pastReminders() {
+            return this.reminders.filter((reminder) => {
+                return new Date(reminder.remindDate) < new Date(Date.now());
+            });
+        },
+        remindersToDisplay() {
+            return this.viewUpcoming
+                ? this.upcomingReminders
+                : this.pastReminders;
         },
         messages() {
             this.messageCache = new Map();
@@ -237,6 +267,9 @@ const app = {
                 this.activeReminder,
                 this.reminderQueue
             );
+        },
+        toggleViewingMode() {
+            this.viewUpcoming = !this.viewUpcoming;
         },
         snoozeReminder(reminder, minutes) {
             reminder.remindDate = formatTime(

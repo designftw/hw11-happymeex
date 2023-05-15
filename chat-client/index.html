@@ -82,7 +82,7 @@
                             <div id="reminder-holder">
                                 <div
                                     class="reminder"
-                                    v-for="reminder of reminders"
+                                    v-for="reminder of remindersToDisplay"
                                     :key="reminder.id"
                                 >
                                     <label>
@@ -139,6 +139,10 @@
                                     :disabled="undoStack.length === 0"
                                 >
                                     Undo
+                                </button>
+                                <button @click="toggleViewingMode">
+                                    See {{viewUpcoming ? "Past" : "Upcoming"}}
+                                    Reminders
                                 </button>
                                 <button @click="openNewReminder">
                                     New Reminder
@@ -303,10 +307,6 @@
                                     >
                                         Delete
                                     </button>
-                                    <label v-if="reminderQueue.length > 1">
-                                        <input type="checkbox" />
-                                        Apply to all {{reminderQueue.length}}
-                                    </label>
                                 </div>
                                 <div>
                                     <button
