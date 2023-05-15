@@ -451,10 +451,18 @@
                             <img src="assets/eye.png" id="eye-image" />
                             <span>Viewing in Incognito mode.</span>
                         </div>
-                        <h2>
-                            {{privateMessaging ? "@" + recipientUsername :
-                            "Channel: "+channel}}
-                        </h2>
+                        <div id="chat-titleHolder">
+                            <h2>
+                                {{privateMessaging ? "@" + recipientUsername :
+                                "Channel: "+channel}}
+                            </h2>
+                            <button
+                                @click="openCreateReminderFromChat()"
+                                id="create-from-chat-button"
+                            >
+                                Create reminder for this chat
+                            </button>
+                        </div>
                     </div>
 
                     <!-- A form for sending messages -->

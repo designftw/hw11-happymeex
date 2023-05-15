@@ -268,6 +268,19 @@ const app = {
                 this.reminderQueue
             );
         },
+        openCreateReminderFromChat() {
+            this.chat = this.privateMessaging
+                ? {
+                      name: this.recipientUsername,
+                      type: "private",
+                      recipientId: this.recipient,
+                  }
+                : {
+                      name: this.channel,
+                      type: "channel",
+                  };
+            this.openNewReminder();
+        },
         toggleViewingMode() {
             this.viewUpcoming = !this.viewUpcoming;
         },
@@ -425,6 +438,7 @@ const app = {
         },
         openNewReminder() {
             this.reminderView = "new";
+            this.remindersOpen = true;
             this.remindDate = formatTime(defaultDate());
             setTimeout(() => this.$refs.reminderTitle.focus(), 50);
         },

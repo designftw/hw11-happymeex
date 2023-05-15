@@ -185,3 +185,14 @@ main > article {
     margin-right: 0.7em;
     opacity: 52%;
 }
+
+#chat-titleHolder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#create-from-chat-button {
+    box-sizing: border-box;
+    margin-right: 1em;
+}
