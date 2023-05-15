@@ -1,1 +1,5 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/MdyKhKdB)
+## Chat App
+
+The `chat-client` directory contains the frontend code for a web chat app
+developed as a final project for MIT 6.S063 Design For The Web of Spring 2023.
+It is written with Vue and hooks up to a backend via the [Graffiti API](https://graffiti.garden/).
