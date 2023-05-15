@@ -60,7 +60,7 @@ const app = {
         this.$refs.messageBarInput.focus();
         //console.log("from setup:", this.reminders);
         for (const reminder of this.reminders) {
-            this.scheduleReminder(reminder);
+            if (reminder.notify) this.scheduleReminder(reminder);
         }
     },
 
