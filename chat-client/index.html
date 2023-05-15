@@ -301,6 +301,9 @@
                                     <button @click="dismissQueuedReminder()">
                                         Dismiss
                                     </button>
+                                    <button @click="dismissAll()">
+                                        Dismiss all
+                                    </button>
                                     <button
                                         @click="snoozeReminder(currReminder, snoozeTime)"
                                         :disabled="!(snoozeTime > 0)"

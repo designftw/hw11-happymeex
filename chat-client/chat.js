@@ -292,6 +292,12 @@ const app = {
             this.dismissQueuedReminder();
             this.scheduleReminder(reminder, minutes * 60 * 1000);
         },
+        dismissAll() {
+            this.closeModal();
+            this.reminderView = "home";
+            this.reminderQueue = [];
+            this.activeReminder = 0;
+        },
         /** Removes reminder from queue but does not kill it */
         dismissQueuedReminder() {
             // remove current one by default
