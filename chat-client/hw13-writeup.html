@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>Chat App Writeup</title>
+        <link rel="stylesheet" href="writeup.css" />
+    </head>
+    <body>
+        <header><h1>Chat App Writeup</h1></header>
+        <main>
+            <p>
+                The problem that I set out to address with my chat app was the
+                following:
+            </p>
+            <blockquote>
+                Users want an organized way to
+                <b> view messages without revealing that they have done so </b>
+                and a way to <b> schedule reminders for pending responses. </b>
+                (During needfinding, I found that users often felt reluctant to
+                open a message and read it since the read receipt would show
+                that they'd seen the message and obligate them to respond. One
+                result was that users would just not open messages and then
+                forget to respond.)
+            </blockquote>
+            <p>
+                To address this problem, I implemented togglable read receipts
+                ("Incognito mode") and a reminder-scheduling system by which
+                users can create, edit, and delete reminders for themselves.
+                This solves the issue identified during needfinding by allowing
+                users to open a chat in Incognito mode and then schedule a
+                reminder to responding to the chat later. Though this was the
+                motivating use case, my ultimate design and implementation
+                became more of a general self-reminding system: users are given
+                the option to associate no chat at all to a given reminder.
+            </p>
+            <p>
+                Features I added since the previous homework, taking into
+                account my own vision, the feedback I got from studio, and the
+                preliminary feedback I got on HW12:
+            </p>
+            <ul>
+                <li>
+                    The "remind" portion of "reminder scheduling". Last week I
+                    implemented the scheduling functionality, and this week, the
+                    scheduled reminders do in fact remind the user when the time
+                    comes by opening up a notification popup. If the user is
+                    offline at the time of the reminding, the app displays the
+                    reminder notification on the user's next login. From the
+                    notification panel, the user can dismiss the notification,
+                    snooze the notification, delete the reminder, or just click
+                    through notifications to view them.
+                </li>
+                <li>
+                    Creating new reminders associated to a chat directly from
+                    the chat window.
+                </li>
+                <li>
+                    Distinguishing between upcoming reminders and past reminders
+                    in the UI.
+                </li>
+                <li>
+                    Persisting recent chats across page loads via local storage.
+                </li>
+                <li>
+                    Small UI/UX changes like adding an "X" button for closing
+                    the reminder popup, disallowing access to the channel with
+                    empty channel name, etc.
+                </li>
+            </ul>
+        </main>
+    </body>
+</html>
