@@ -41,6 +41,24 @@ const defaultDate = () => {
     return new Date(Date.now() + 24 * 60 * 60 * 1000);
 };
 
+const getRecentChats = () => {
+    if (localStorage.recentChats !== undefined) {
+        return JSON.parse(localStorage.recentChats);
+    } else
+        return [
+            {
+                name: "secret-meex",
+                type: "channel",
+            },
+        ];
+};
+
+const getSelectedChat = () => {
+    if (localStorage.selectedChat !== undefined) {
+        return parseInt(localStorage.selectedChat);
+    } else return 0;
+};
+
 const app = {
     // Import MaVue
     mixins: [mixin],
@@ -62,6 +80,11 @@ const app = {
         for (const reminder of this.reminders) {
             if (reminder.notify) this.scheduleReminder(reminder);
         }
+
+        globalThis.addEventListener("beforeunload", () => {
+            localStorage.recentChats = JSON.stringify(this.recentChats);
+            localStorage.selectedChat = this.selectedChat.toString();
+        });
     },
 
     setup() {
@@ -105,13 +128,8 @@ const app = {
             usernameInputTooltip: false,
             usernameInputMessage: "",
             searchingPrivate: false,
-            selectedChat: 0,
-            recentChats: [
-                {
-                    name: "secret-meex",
-                    type: "channel",
-                },
-            ],
+            selectedChat: getSelectedChat(),
+            recentChats: getRecentChats(),
             messagesLoading: true,
             atBottom: true, // whether user is scrolled to the bottom
             oldScrollTop: 0,
@@ -262,11 +280,8 @@ const app = {
 
     methods: {
         temp() {
-            console.log(
-                this.reminderView,
-                this.activeReminder,
-                this.reminderQueue
-            );
+            getRecentChats();
+            //console.log(localStorage.recentChats);
         },
         openCreateReminderFromChat() {
             this.chat = this.privateMessaging
